@@ -38,6 +38,7 @@ const addMin = (t, m) => { const [h, mi] = t.split(":").map(Number); const x = h
 const platform = u => /zoom\.us/.test(u) ? "Zoom" : /meet\.google/.test(u) ? "Google Meet" : "Посилання";
 const link = u => u ? `<a href="${esc(u)}">${platform(u)}</a>` : "";
 const slot = D.slotMinutes || 80;
+const phones = D.showPhones !== false;
 const evType = c => ["session", "practice", "deadline"].includes(c.type) ? c.type : "session";
 const now = new Date();
 
@@ -57,7 +58,7 @@ const schedule = Object.keys(byDay).sort().map(d => `<tbody class="day">
 const contacts = Object.values(D.subjects).flatMap(s => s.teachers.map((tid, i) => {
   const t = D.teachers[tid] || {};
   return `<tr>${i === 0 ? `<td rowspan="${s.teachers.length}">${esc(s.name)}</td>` : ""}
-    <td>${esc(t.name)}</td><td class="nw">${esc(t.phone)}</td>
+    <td>${esc(t.name)}</td>${phones ? `<td class="nw">${esc(t.phone)}</td>` : ""}
     <td class="url">${t.link ? `<a href="${esc(t.link)}">${esc(t.link)}</a>` : ""}${t.note ? `<div class="note">${esc(t.note)}</div>` : ""}</td></tr>`;
 })).join("");
 
@@ -148,8 +149,8 @@ footer { margin-top: 18px; padding-top: 6px; border-top: 1px solid #dde2e8; colo
 <table class="sched"><thead><tr><th>Час</th><th>Предмет</th><th>Викладач</th><th>Підключення</th></tr></thead>${schedule}</table>
 <p class="muted" style="font-size:8pt">Тривалість пари — ${slot} хв. Назви «Zoom» / «Google Meet» у PDF клікабельні; повні посилання — у таблиці нижче.</p>
 
-<h2>Викладачі, контакти та посилання</h2>
-<table class="contacts"><thead><tr><th>Предмет</th><th>Викладач</th><th>Телефон</th><th>Посилання на заняття</th></tr></thead><tbody>${contacts}</tbody></table>
+<h2>${phones ? "Викладачі, контакти та посилання" : "Викладачі та посилання"}</h2>
+<table class="contacts"><thead><tr><th>Предмет</th><th>Викладач</th>${phones ? "<th>Телефон</th>" : ""}<th>Посилання на заняття</th></tr></thead><tbody>${contacts}</tbody></table>
 
 <h2 class="pb">Графік навчального року</h2>
 <div class="legend"><span><i class="sw session"></i>сесія</span><span><i class="sw practice"></i>практика</span><span><i class="sw deadline"></i>дедлайн</span><span><u>12</u> — є заняття в розкладі</span></div>
@@ -160,7 +161,7 @@ footer { margin-top: 18px; padding-top: 6px; border-top: 1px solid #dde2e8; colo
 ${recordings}
 ${links}
 
-<footer>Документ містить особисті контакти викладачів — не публікуйте його у відкритому доступі. Актуальна версія — на сайті групи: ${SITE_URL}</footer>
+<footer>Документ містить посилання на заняття — не публікуйте його у відкритому доступі. Актуальна версія — на сайті групи: ${SITE_URL}</footer>
 </body></html>`;
 
 mkdirSync("out", { recursive: true });

@@ -28,6 +28,7 @@ Changing the password = edit `.password`, rebuild, commit, and tell the group.
 ## data.json format
 
 - `teachers`: `{ id: { name, phone, link, note? } }` — `link` is the teacher's default meeting URL.
+- `showPhones`: `false` strips all `phone` fields from the published site payload and the PDF (kept in local `data.json`); set `true` to show them again.
 - `subjects`: `{ id: { name, teachers: [teacherId] } }`
 - `sessions`: `[{ date: "YYYY-MM-DD", time: "HH:MM", subject, teacher, kind?: "л"|"пр"|"лаб", link? }]` — `link` overrides the teacher's link for that one class. Each slot lasts `slotMinutes` (80).
 - `recordings`: `[{ date, subject, title?, url, time? }]` — add after each class once the video is uploaded.

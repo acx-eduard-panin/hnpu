@@ -1,10 +1,10 @@
 // Builds docs/index.html: encrypts data.json with the site password (AES-256-GCM, PBKDF2-SHA256).
 //
 //   node build.mjs              encrypt data.json -> docs/index.html
-//   node build.mjs --decrypt    restore data.json from docs/index.html (if the local copy is lost)
+//   node build.mjs --decrypt    restore data.json from docs/index.html (to out/data.restored.json if data.json exists)
 //
 // Password: SITE_PASSWORD env var, otherwise the first line of .password (both kept out of git).
-import { readFileSync, writeFileSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
 import { webcrypto as crypto } from "node:crypto";
 
 const ITER = 310000;
@@ -31,8 +31,11 @@ if (process.argv.includes("--decrypt")) {
   const p = JSON.parse(m[1]);
   const key = await deriveKey(Buffer.from(p.salt, "base64"), p.iter);
   const plain = await crypto.subtle.decrypt({ name: "AES-GCM", iv: Buffer.from(p.iv, "base64") }, key, Buffer.from(p.ct, "base64"));
-  writeFileSync("data.json", JSON.stringify(JSON.parse(new TextDecoder().decode(plain)), null, 2) + "\n");
-  console.log("Restored data.json");
+  // Never overwrite a local data.json: the published copy may lack fields stripped at build time (e.g. phones).
+  const target = existsSync("data.json") ? "out/data.restored.json" : "data.json";
+  if (target !== "data.json") mkdirSync("out", { recursive: true });
+  writeFileSync(target, JSON.stringify(JSON.parse(new TextDecoder().decode(plain)), null, 2) + "\n");
+  console.log(`Restored ${target}`);
   process.exit(0);
 }
 
@@ -59,6 +62,9 @@ if (problems.length) {
   console.error("data.json problems:\n  " + problems.join("\n  "));
   process.exit(1);
 }
+
+// Phones are stripped from the payload itself (not just hidden), so nobody with the password can read them.
+if (data.showPhones === false) for (const t of Object.values(data.teachers || {})) delete t.phone;
 
 const salt = crypto.getRandomValues(new Uint8Array(16));
 const iv = crypto.getRandomValues(new Uint8Array(12));

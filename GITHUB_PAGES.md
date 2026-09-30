@@ -133,7 +133,9 @@ cd D:\AI\university\physics-site
 node build.mjs --decrypt
 ```
 
-Команда відновить `data.json` з опублікованого `docs/index.html`, якщо файл `.password` на місці.
+Команда відновить `data.json` з опублікованого `docs/index.html`, якщо файл `.password` на місці. Якщо `data.json` уже існує, його не буде перезаписано: результат збережеться в `out/data.restored.json`.
+
+> ⚠ Поки `"showPhones": false`, телефонів на сайті немає, тож і у відновленій копії їх не буде. Тримайте резервну копію оригінального `data.json`.
 
 > 💾 Зробіть резервну копію `physics-site/data.json` і `physics-site/.password` (наприклад, в OneDrive). У git їх немає.
 
