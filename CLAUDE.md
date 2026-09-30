@@ -4,8 +4,8 @@ Workspace for the master's studies of group **А4.08-Мз26-11** (ХНПУ ім�
 
 ## Layout
 
-- `physics-site/` — password-protected static site for the group (schedule, meeting links, teachers, recordings, academic calendar) on GitHub Pages. Its own git repo; read `physics-site/AGENTS.md` before touching it.
-- `artifacts/` — source documents from the university: session schedules (`.docx`), the «Графік освітнього процесу» photo. **Private**: they contain teachers' phone numbers; never commit or publish them. They are not in any git repo.
+- `physics-site/` — password-protected static site for the group (schedule, meeting links, teachers, recordings, academic calendar) on GitHub Pages (deployed by `.github/workflows/pages.yml` from `physics-site/docs`). Read `physics-site/AGENTS.md` before touching it.
+- `artifacts/` — source documents from the university: session schedules (`.docx`), the «Графік освітнього процесу» photo. **Private** (gitignored): they contain teachers' phone numbers; never commit or publish them.
 - `.agents/skills/`, `.claude/skills/` — local `word-document-processor` skill (use it to read new `.docx` schedules).
 
 ## Common tasks

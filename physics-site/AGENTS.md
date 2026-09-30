@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Password-protected static site for the master's group **А4.08-Мз26-11** (Фізика в закладах освіти, ХНПУ, заочна форма). Shows the class schedule with meeting links, teachers' contacts, video recordings of past classes, and the academic-year timetable. Hosted on GitHub Pages from `docs/`. UI language is Ukrainian.
+Password-protected static site for the master's group **А4.08-Мз26-11** (Фізика в закладах освіти, ХНПУ, заочна форма). Shows the class schedule with meeting links, teachers' contacts, video recordings of past classes, and the academic-year timetable. Hosted on GitHub Pages: `../.github/workflows/pages.yml` publishes `docs/` on every push to `main` that touches it. There is no build in CI, so the plaintext never leaves this machine. UI language is Ukrainian.
 
 ## How it works
 
@@ -16,7 +16,7 @@ node build.mjs --decrypt   # recover data.json from docs/index.html
 
 Changing the password = edit `.password`, rebuild, commit, and tell the group.
 
-## Security rules (repo is public)
+## Security rules (treat the repo as public)
 
 - Never commit `data.json`, `.password`, or anything under `../artifacts/` (source docs contain phone numbers).
 - Never put content in plaintext in the template, README, or commit messages — only inside the encrypted payload.

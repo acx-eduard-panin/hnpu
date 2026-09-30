@@ -8,10 +8,10 @@
 
 1. Відредагуйте `data.json` (локально, не в git): додайте заняття, записи (`recordings`) або посилання (`links`).
 2. `node build.mjs`
-3. Закомітьте й запуште `docs/index.html` — GitHub Pages оновиться за хвилину.
+3. Закомітьте й запуште `docs/index.html` — GitHub Actions опублікує сайт за 1–2 хвилини.
 
 Формат даних і правила — в [AGENTS.md](AGENTS.md).
 
 ## Публікація на GitHub Pages (один раз)
 
-Settings → Pages → Source: *Deploy from a branch* → Branch `main`, folder `/docs`.
+Settings → Pages → Source: **GitHub Actions**. Далі сайт публікує workflow `.github/workflows/pages.yml` з кореня репозиторію.
