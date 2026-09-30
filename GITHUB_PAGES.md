@@ -1,0 +1,146 @@
+# Інструкція: сайт групи на GitHub Pages
+
+Покроково: як один раз увімкнути GitHub Pages для репозиторію `acx-eduard-panin/hnpu`, як потім оновлювати сайт і що робити, якщо щось не працює.
+
+**Адреса сайту після налаштування:** https://acx-eduard-panin.github.io/hnpu/
+
+## Як це влаштовано
+
+```
+data.json + .password  ──node build.mjs──►  physics-site/docs/index.html  ──git push──►  GitHub Actions  ──►  GitHub Pages
+(тільки на вашому ПК)                       (зашифрований, у git)                        (pages.yml)          (публічна адреса)
+```
+
+- Сайт збирається **локально**. На GitHub потрапляє лише зашифрований `index.html`.
+- `data.json`, `.password` і `artifacts/` у git не потрапляють: вони в `.gitignore`.
+- Workflow [`.github/workflows/pages.yml`](.github/workflows/pages.yml) публікує папку `physics-site/docs` після кожного push у `main`, який її змінює.
+
+---
+
+## Частина 1. Одноразове налаштування
+
+### Крок 1. Перевірте тариф і видимість репозиторію
+
+GitHub Pages для **приватного** репозиторію доступний лише на платних тарифах (Pro, Team, Enterprise). На безкоштовному (Free) репозиторій має бути **публічним**.
+
+1. Відкрийте https://github.com/settings/billing і подивіться свій план.
+2. Якщо план **Free**, зробіть репозиторій публічним:
+   - https://github.com/acx-eduard-panin/hnpu/settings → внизу сторінки **Danger Zone** → **Change repository visibility** → **Change to public** → підтвердьте.
+3. Якщо план **Pro / Team / Enterprise**, можна лишити репозиторій приватним.
+
+> **Що побачать сторонні, якщо репозиторій публічний:** код сайту, README / CLAUDE.md з назвою групи й датами сесій, скіл для `.docx`. Телефонів викладачів, посилань на Zoom / Meet і записів **не видно**: вони лише всередині зашифрованого файлу.
+>
+> Сам сайт на GitHub Pages **завжди публічний** (його може відкрити будь-хто, хто знає адресу), навіть якщо репозиторій приватний. Захищає його тільки пароль.
+
+### Крок 2. Увімкніть Pages з джерелом «GitHub Actions»
+
+1. Відкрийте https://github.com/acx-eduard-panin/hnpu/settings/pages
+2. У блоці **Build and deployment** → **Source** оберіть **GitHub Actions**.
+   - ⚠ **Не** обирайте «Deploy from a branch»: тоді GitHub шукатиме сайт у корені репозиторію, а він лежить у `physics-site/docs`.
+3. Більше нічого натискати не треба, зберігається автоматично.
+
+### Крок 3. Переконайтесь, що Actions увімкнені
+
+1. https://github.com/acx-eduard-panin/hnpu/settings/actions
+2. **Actions permissions** → **Allow all actions and reusable workflows** (зазвичай уже так).
+
+### Крок 4. Запустіть першу публікацію
+
+Workflow сам запускається лише тоді, коли змінюється сайт, тому перший раз запустіть його вручну:
+
+1. https://github.com/acx-eduard-panin/hnpu/actions
+2. Ліворуч оберіть **Deploy site**.
+3. Праворуч **Run workflow** → гілка `main` → **Run workflow**.
+4. Зачекайте 1–2 хвилини, поки з'явиться зелена галочка ✅.
+5. Натисніть на запуск: у блоці **deploy** буде посилання на сайт.
+
+### Крок 5. Перевірте сайт
+
+1. Відкрийте https://acx-eduard-panin.github.io/hnpu/
+2. Має з'явитися вікно входу «Фізика · Магістратура».
+3. Введіть пароль із файлу `physics-site/.password`: мають відкритися розклад і календар.
+4. Перевірте з телефону: сайт адаптований під мобільні.
+
+### Крок 6. Надішліть групі
+
+Посилання й пароль краще надсилати **окремими повідомленнями** (наприклад, посилання в загальний чат, а пароль в особисті або закріпленим повідомленням). Шаблон:
+
+> Сайт групи А4.08-Мз26-11: розклад, посилання на Zoom / Meet, записи занять і графік навчання.
+> 🔗 https://acx-eduard-panin.github.io/hnpu/
+> Пароль: *(у закріпленому повідомленні)*
+> Порада: поставте галочку «Запам'ятати на цьому пристрої», щоб не вводити пароль щоразу.
+
+---
+
+## Частина 2. Як оновлювати сайт
+
+Усі команди виконуються в PowerShell або Git Bash.
+
+### Додати запис заняття
+
+1. Відкрийте `physics-site/data.json` і додайте в масив `recordings`:
+   ```json
+   "recordings": [
+     { "date": "2026-10-05", "subject": "theor", "title": "Теоретична фізика, заняття 1", "url": "https://drive.google.com/..." }
+   ]
+   ```
+   `subject` — це ключ предмета з блоку `subjects`: `psych`, `theor`, `method`, `philos`, `innov`, `ai`, `it`.
+2. Зберіть і опублікуйте:
+   ```sh
+   cd D:\AI\university\physics-site
+   node build.mjs
+   git add docs/index.html
+   git commit -m "Запис: Теоретична фізика 05.10"
+   git push
+   ```
+3. За 1–2 хвилини зміни з'являться на сайті (якщо не видно, натисніть **Ctrl+F5**).
+
+### Додати новий розклад (наступна сесія)
+
+1. Покладіть документ у `artifacts/`.
+2. Додайте заняття в `sessions` у `data.json`, а нових викладачів і предмети в `teachers` / `subjects`. Формат описаний у [`physics-site/AGENTS.md`](physics-site/AGENTS.md).
+   Або просто попросіть Claude Code: *«Додай на сайт розклад з artifacts/<файл>.docx»*.
+3. `node build.mjs` → `git add docs/index.html` → `git commit` → `git push`.
+
+Якщо в `data.json` є помилка (невідомий предмет, неправильна дата), `node build.mjs` покаже, що саме не так, і нічого не зламає.
+
+### Змінити пароль
+
+1. Запишіть новий пароль у перший рядок `physics-site/.password`.
+2. `node build.mjs` → commit → push.
+3. Повідомте групу. Старий пароль перестане працювати одразу після публікації; у кого він був збережений, побачать вікно входу.
+
+### Якщо загубився `data.json`
+
+```sh
+cd D:\AI\university\physics-site
+node build.mjs --decrypt
+```
+
+Команда відновить `data.json` з опублікованого `docs/index.html`, якщо файл `.password` на місці.
+
+> 💾 Зробіть резервну копію `physics-site/data.json` і `physics-site/.password` (наприклад, в OneDrive). У git їх немає.
+
+---
+
+## Частина 3. Якщо щось не працює
+
+| Симптом | Причина | Що зробити |
+|---|---|---|
+| У Settings → Pages немає вибору або пропонує Upgrade | Приватний репозиторій на тарифі Free | Крок 1: зробіть репозиторій публічним |
+| Workflow червоний ❌, помилка `Get Pages site failed` / `Not Found` | Pages не ввімкнено або Source не «GitHub Actions» | Крок 2, потім **Re-run jobs** |
+| `Branch "main" is not allowed to deploy to github-pages` | Правила середовища | Settings → Environments → `github-pages` → Deployment branches → додайте `main` |
+| Сайт показує 404 | Перша публікація ще не пройшла або ще триває | Перевірте, що в Actions є зелений запуск; зачекайте до 10 хв; адреса саме `…github.io/hnpu/` |
+| Після push на сайті старі дані | Не запущено `node build.mjs` або кеш браузера | Перевірте, що `docs/index.html` є в коміті; Ctrl+F5 |
+| Workflow не запустився після push | У коміті не було змін у `physics-site/docs` | Запустіть `node build.mjs` і закомітьте `docs/index.html`, або **Run workflow** вручну |
+| «Невірний пароль» з правильним паролем | Пароль змінено, а сайт ще не оновився | Зачекайте завершення workflow, Ctrl+F5 |
+| «Сайт ще не зібрано (node build.mjs)» | Опубліковано шаблон без даних | `node build.mjs`, commit, push |
+
+---
+
+## Безпека: що варто знати
+
+- **Надійність захисту визначає пароль.** Шифрування сильне (AES-256 + PBKDF2), але короткий або очевидний пароль можна підібрати. Використовуйте згенерований, як зараз.
+- **Будь-хто з паролем може переслати його далі.** Якщо пароль «витік», змініть його (див. вище).
+- Сайт закритий від пошукових систем (`noindex`), але адреса не секретна.
+- **Ніколи не комітьте** `data.json`, `.password` і файли з `artifacts/`. `.gitignore` уже це блокує, тож не додавайте їх примусово (`git add -f`).

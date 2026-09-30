@@ -13,6 +13,7 @@
 | [`physics-site/`](physics-site/) | Сайт групи з паролем для GitHub Pages: розклад із посиланнями на Zoom / Meet, календар, викладачі, записи занять, графік навчання. Деталі — в [`physics-site/README.md`](physics-site/README.md). |
 | `artifacts/` | Документи від університету: розклад настановчої сесії (`.docx`), фото графіка освітнього процесу. **Приватні** (там телефони викладачів), у git не потрапляють. |
 | `.github/workflows/pages.yml` | Автоматична публікація `physics-site/docs` на GitHub Pages після кожного push. |
+| [`GITHUB_PAGES.md`](GITHUB_PAGES.md) | **Інструкція:** як увімкнути GitHub Pages, оновлювати сайт, міняти пароль, що робити при помилках. |
 | `CLAUDE.md` | Інструкції для Claude Code щодо цієї папки. |
 | `.agents/`, `.claude/` | Локальні скіли для агентів (читання `.docx`). |
 

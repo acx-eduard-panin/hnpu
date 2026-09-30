@@ -14,4 +14,4 @@
 
 ## Публікація на GitHub Pages (один раз)
 
-Settings → Pages → Source: **GitHub Actions**. Далі сайт публікує workflow `.github/workflows/pages.yml` з кореня репозиторію.
+Покрокова інструкція — [`../GITHUB_PAGES.md`](../GITHUB_PAGES.md). Коротко: Settings → Pages → Source: **GitHub Actions**. Далі сайт публікує workflow `.github/workflows/pages.yml` з кореня репозиторію.
