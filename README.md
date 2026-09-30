@@ -37,6 +37,7 @@
    ```sh
    cd physics-site
    node build.mjs
+   node pdf.mjs
    git commit -am "Оновлення розкладу" && git push
    ```
 

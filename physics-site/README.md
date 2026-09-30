@@ -7,8 +7,8 @@
 ## Як оновити
 
 1. Відредагуйте `data.json` (локально, не в git): додайте заняття, записи (`recordings`) або посилання (`links`).
-2. `node build.mjs`
-3. Закомітьте й запуште `docs/index.html` — GitHub Actions опублікує сайт за 1–2 хвилини.
+2. `node build.mjs` і `node pdf.mjs` (сайт + PDF)
+3. Закомітьте й запуште папку `docs/` — GitHub Actions опублікує сайт за 1–2 хвилини.
 
 Формат даних і правила — в [AGENTS.md](AGENTS.md).
 

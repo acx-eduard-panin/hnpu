@@ -57,7 +57,12 @@ button.primary { width: 100%; margin-top: 12px; background: var(--accent); borde
 header { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; margin-bottom: 20px; }
 header h1 { font-size: 22px; margin: 0; line-height: 1.25; }
 header .sub { color: var(--muted); font-size: 14px; margin-top: 4px; }
-.logout { flex-shrink: 0; font-size: 14px; }
+.actions { display: flex; gap: 8px; flex-shrink: 0; }
+.logout { font-size: 14px; }
+.pdf {
+  font-size: 14px; padding: 8px 14px; border: 1px solid var(--border); border-radius: 8px;
+  background: var(--surface); text-decoration: none;
+}
 
 /* next card */
 .next {
@@ -204,7 +209,10 @@ footer { margin-top: 40px; color: var(--muted); font-size: 13px; }
       <h1 id="hTitle"></h1>
       <div class="sub" id="hSub"></div>
     </div>
-    <button class="logout" id="logout">Вийти</button>
+    <div class="actions">
+      <a class="pdf" href="rozklad.pdf" download title="PDF відкривається тим самим паролем">PDF</a>
+      <button class="logout" id="logout">Вийти</button>
+    </div>
   </header>
   <div id="next"></div>
   <nav class="tabs" role="tablist">
