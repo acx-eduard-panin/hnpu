@@ -1,0 +1,6 @@
+# Plaintext data and the password must never be committed — the repo is public.
+data.json
+.password
+*.local.json
+node_modules/
+.idea/
