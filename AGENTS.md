@@ -29,7 +29,7 @@ Changing the password = edit `.password`, rebuild, commit, and tell the group.
 - `sessions`: `[{ date: "YYYY-MM-DD", time: "HH:MM", subject, teacher, kind?: "л"|"пр"|"лаб", link? }]` — `link` overrides the teacher's link for that one class. Each slot lasts `slotMinutes` (80).
 - `recordings`: `[{ date, subject, title?, url, time? }]` — add after each class once the video is uploaded.
 - `links`: `[{ title, url, note? }]` — group chat, drives, course pages.
-- `calendar`: `[{ name, from?, to }]` — sessions, practice, deadlines from the official «Графік освітнього процесу».
+- `calendar`: `[{ name, type, from?, to }]` — `type`: `session` (blue), `practice` (amber), `deadline` (red outline, marks only `to`). Rendered as month grids — sessions, practice, deadlines from the official «Графік освітнього процесу».
 
 The build fails on unknown ids, malformed dates, or non-http(s) URLs — fix `data.json` rather than weakening the checks.
 

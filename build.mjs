@@ -51,6 +51,10 @@ for (const [i, r] of (data.recordings || []).entries()) {
   if (r.subject && !data.subjects?.[r.subject]) problems.push(`recordings[${i}]: unknown subject "${r.subject}"`);
   if (!/^https?:\/\//.test(r.url || "")) problems.push(`recordings[${i}]: url must start with http(s)://`);
 }
+for (const [i, c] of (data.calendar || []).entries()) {
+  if (c.type && !["session", "practice", "deadline"].includes(c.type)) problems.push(`calendar[${i}]: type must be session|practice|deadline`);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(c.to) || (c.from && !/^\d{4}-\d{2}-\d{2}$/.test(c.from))) problems.push(`calendar[${i}]: bad from/to`);
+}
 if (problems.length) {
   console.error("data.json problems:\n  " + problems.join("\n  "));
   process.exit(1);

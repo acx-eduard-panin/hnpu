@@ -10,12 +10,16 @@
   --bg: #f6f7f9; --surface: #ffffff; --surface-2: #f0f2f5; --text: #1b1f24; --muted: #5f6b7a;
   --border: #dde2e8; --accent: #2457d6; --accent-soft: #e7eefc; --live: #0f8a4a; --live-soft: #e3f5ea;
   --danger: #c0352b; --radius: 12px;
+  --ev-session: #2457d6; --ev-session-soft: #dfe8fc; --ev-practice: #9a5b00; --ev-practice-soft: #fbedd5;
+  --ev-deadline: #c0352b;
 }
 @media (prefers-color-scheme: dark) {
   :root {
     --bg: #111418; --surface: #1a1e24; --surface-2: #222830; --text: #e8ebef; --muted: #99a3b0;
     --border: #2d343e; --accent: #7aa2ff; --accent-soft: #1f2a44; --live: #4cd08a; --live-soft: #16301f;
     --danger: #ff7b70;
+    --ev-session: #9dbaff; --ev-session-soft: #1f2d4d; --ev-practice: #f0b458; --ev-practice-soft: #3a2c14;
+    --ev-deadline: #ff7b70;
   }
 }
 * { box-sizing: border-box; }
@@ -108,20 +112,76 @@ nav.tabs button[aria-selected=true] { color: var(--text); border-bottom-color: v
 .card .note { color: var(--muted); font-size: 12px; margin-top: 4px; }
 .card .count { color: var(--muted); font-size: 13px; margin-top: 8px; }
 
-/* calendar */
-.cal .row { grid-template-columns: 1fr auto; }
+/* schedule layout: side calendar + day list */
+.sched { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 20px; align-items: start; }
+.sched aside { position: sticky; top: 12px; display: grid; gap: 10px; }
+.day.flash .list { outline: 2px solid var(--accent); outline-offset: 2px; }
+.calnav { display: flex; justify-content: space-between; align-items: center; gap: 6px; }
+.calnav button { padding: 4px 10px; }
+.calnav .todayBtn { flex: 1; font-size: 13px; }
+
+/* month grid */
+.months { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); }
+.month { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; }
+.month.current { border-color: var(--accent); }
+.month h3 { font-size: 14px; margin: 0 0 8px; text-align: center; }
+.mgrid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; font-size: 13px; }
+.mgrid .wd { color: var(--muted); font-size: 11px; padding: 2px 0; }
+.mgrid .d {
+  aspect-ratio: 1; display: grid; place-items: center; border-radius: 6px; position: relative;
+  font-variant-numeric: tabular-nums;
+}
+.mgrid .d.out { visibility: hidden; }
+.mgrid .d.we { color: var(--muted); }
+.mgrid .d.past { opacity: .5; }
+.mgrid .d.session { background: var(--ev-session-soft); color: var(--ev-session); font-weight: 600; }
+.mgrid .d.practice { background: var(--ev-practice-soft); color: var(--ev-practice); font-weight: 600; }
+.mgrid .d.deadline { box-shadow: inset 0 0 0 2px var(--ev-deadline); color: var(--ev-deadline); font-weight: 600; }
+.mgrid .d.today { background: var(--text); color: var(--bg); font-weight: 700; opacity: 1; }
+.mgrid .d.has { cursor: pointer; }
+.mgrid .d.has::after {
+  content: ""; position: absolute; bottom: 3px; left: 50%; width: 4px; height: 4px; margin-left: -2px;
+  border-radius: 50%; background: currentColor;
+}
+.mgrid .d.has:hover, .mgrid .d.has:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--muted); margin-bottom: 14px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 12px; height: 12px; border-radius: 3px; display: inline-block; flex-shrink: 0; }
+.sw.session { background: var(--ev-session-soft); box-shadow: inset 0 0 0 1px var(--ev-session); }
+.sw.practice { background: var(--ev-practice-soft); box-shadow: inset 0 0 0 1px var(--ev-practice); }
+.sw.deadline { box-shadow: inset 0 0 0 2px var(--ev-deadline); }
+.sw.today { background: var(--text); }
+.sw.dot { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); margin: 0 3px; }
+aside .legend { margin: 0; font-size: 12px; }
+
+.cal { margin-top: 20px; }
+.cal .row { grid-template-columns: 12px 1fr auto; }
 .cal .row .when { color: var(--muted); font-size: 14px; font-variant-numeric: tabular-nums; text-align: right; }
 .cal .row.done { opacity: .55; }
+.cal .row.now { background: var(--accent-soft); }
 
 .empty { color: var(--muted); background: var(--surface); border: 1px dashed var(--border); border-radius: var(--radius); padding: 24px; text-align: center; }
 .search { margin-bottom: 16px; }
 footer { margin-top: 40px; color: var(--muted); font-size: 13px; }
 
+@media (max-width: 760px) {
+  .sched { grid-template-columns: 1fr; }
+  .sched aside { position: static; grid-template-columns: 1fr 1fr; }
+  .sched aside .calnav, .sched aside .legend { grid-column: 1 / -1; }
+}
+@media (max-width: 560px) {
+  .sched aside .month { padding: 8px 6px; }
+  .sched aside .month h3 { font-size: 13px; margin-bottom: 4px; }
+  .sched aside .mgrid { font-size: 12px; gap: 1px; }
+  .sched aside .mgrid .wd { font-size: 10px; }
+  .sched aside .mgrid .d.has::after { bottom: 1px; }
+}
 @media (max-width: 560px) {
   .row { grid-template-columns: 52px 1fr; }
   .row a.btn { grid-column: 2; justify-self: start; }
-  .cal .row { grid-template-columns: 1fr; }
-  .cal .row .when { text-align: left; }
+  .cal .row { grid-template-columns: 12px 1fr; }
+  .cal .row .when { grid-column: 2; text-align: left; }
 }
 </style>
 </head>
@@ -190,7 +250,50 @@ const addMin = (t, m) => { const [h, mi] = t.split(":").map(Number); const x = h
 const todayStr = () => { const n = new Date(); return `${n.getFullYear()}-${String(n.getMonth() + 1).padStart(2, "0")}-${String(n.getDate()).padStart(2, "0")}`; };
 const tel = p => `tel:+38${String(p).replace(/\D/g, "")}`;
 
-let D, tab = "schedule";
+const MONN = ["Січень", "Лютий", "Березень", "Квітень", "Травень", "Червень", "Липень", "Серпень", "Вересень", "Жовтень", "Листопад", "Грудень"];
+const WD = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"];
+const EV_TYPES = { session: "Сесія", practice: "Практика", deadline: "Дедлайн" };
+const ymd = (y, m, d) => `${y}-${String(m + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+const lessons = n => `${n} ${n % 10 >= 1 && n % 10 <= 4 && !(n % 100 >= 11 && n % 100 <= 14) ? "заняття" : "занять"}`;
+
+let D, tab = "schedule", byDay = {}, schedMonth; // schedMonth: [year, month] shown first in the side calendar
+
+const evType = c => EV_TYPES[c.type] ? c.type : "session";
+// Deadlines (no `from`) mark only their last day; periods mark every day from..to.
+const eventsOn = ds => D.calendar.filter(c => c.from ? c.from <= ds && ds <= c.to : ds === c.to);
+
+function monthHTML(y, m) {
+  const today = todayStr(), off = (new Date(y, m, 1).getDay() + 6) % 7, days = new Date(y, m + 1, 0).getDate();
+  let cells = WD.map(w => `<div class="wd">${w}</div>`).join("") + `<div class="d out"></div>`.repeat(off);
+  for (let d = 1; d <= days; d++) {
+    const ds = ymd(y, m, d), ev = eventsOn(ds), n = byDay[ds]?.length || 0, cls = ["d"];
+    const period = ev.find(e => evType(e) !== "deadline");
+    if (period) cls.push(evType(period));
+    if (ev.some(e => evType(e) === "deadline")) cls.push("deadline");
+    if ((off + d - 1) % 7 >= 5) cls.push("we");
+    if (ds === today) cls.push("today"); else if (ds < today) cls.push("past");
+    if (n) cls.push("has");
+    const tip = [ds === today ? "Сьогодні" : "", ...ev.map(e => e.name), n ? lessons(n) : ""].filter(Boolean).join("\n");
+    cells += `<div class="${cls.join(" ")}"${n ? ` data-day="${ds}" role="button" tabindex="0"` : ""}${tip ? ` title="${esc(tip)}"` : ""}>${d}</div>`;
+  }
+  const cur = today.startsWith(ymd(y, m, 1).slice(0, 7));
+  return `<div class="month ${cur ? "current" : ""}"><h3>${MONN[m]} ${y}</h3><div class="mgrid">${cells}</div></div>`;
+}
+
+const shiftMonth = ([y, m], k) => { const x = new Date(y, m + k, 1); return [x.getFullYear(), x.getMonth()]; };
+
+function goToDay(ds) {
+  const [y, m] = ds.split("-").map(Number);
+  if (tab !== "schedule") { tab = "schedule"; try { sessionStorage.setItem("physics-site-tab", tab); } catch {} }
+  // Keep the side calendar where it is if the day is already visible in one of its two months.
+  const shown = [schedMonth, shiftMonth(schedMonth, 1)].some(([sy, sm]) => sy === y && sm === m - 1);
+  if (!shown) schedMonth = [y, m - 1];
+  render();
+  const el = document.getElementById("d-" + ds);
+  if (!el) return;
+  el.scrollIntoView({ behavior: "smooth", block: "start" });
+  el.classList.add("flash"); setTimeout(() => el.classList.remove("flash"), 1500);
+}
 
 function sessionLink(s) { return s.link || D.teachers[s.teacher]?.link || ""; }
 function sessionState(s, now) {
@@ -217,13 +320,21 @@ function renderNext() {
 
 function renderSchedule() {
   const now = new Date(), today = todayStr();
-  const days = {};
-  for (const s of D.sessions) (days[s.date] ||= []).push(s);
-  const keys = Object.keys(days).sort();
-  if (!keys.length) return `<div class="empty">Розклад ще не додано.</div>`;
-  return keys.map(d => {
+  const keys = Object.keys(byDay).sort();
+  const aside = `<aside>
+    <div class="calnav">
+      <button data-nav="-1" aria-label="Попередній місяць">‹</button>
+      <button class="todayBtn" data-nav="0">Сьогодні</button>
+      <button data-nav="1" aria-label="Наступний місяць">›</button>
+    </div>
+    ${monthHTML(...schedMonth)}${monthHTML(...shiftMonth(schedMonth, 1))}
+    <div class="legend"><span><i class="sw today"></i>сьогодні</span><span><i class="sw dot"></i>є заняття</span>
+      <span><i class="sw session"></i>сесія</span><span><i class="sw practice"></i>практика</span></div>
+  </aside>`;
+  if (!keys.length) return `<div class="sched">${aside}<div class="empty">Розклад ще не додано.</div></div>`;
+  return `<div class="sched">${aside}<div>${keys.map(d => {
     const cls = d < today ? "past" : d === today ? "today" : "";
-    const rows = days[d].sort((a, b) => a.time.localeCompare(b.time)).map(s => {
+    const rows = [...byDay[d]].sort((a, b) => a.time.localeCompare(b.time)).map(s => {
       const subj = D.subjects[s.subject], t = D.teachers[s.teacher], link = sessionLink(s);
       const st = sessionState(s, now);
       return `<div class="row ${st === "live" ? "live" : ""}">
@@ -233,10 +344,10 @@ function renderSchedule() {
         ${link ? `<a class="btn" href="${esc(safeUrl(link))}" target="_blank" rel="noopener">${st === "live" ? "Приєднатися" : "Посилання"}</a>` : "<span></span>"}
       </div>`;
     }).join("");
-    return `<div class="day ${cls}" ${d === today ? 'id="today"' : ""}>
+    return `<div class="day ${cls}" id="d-${d}">
       <h2>${fmtDay(d)} <span class="dow">${DOW[parseDate(d).getDay()]}</span></h2>
       <div class="list">${rows}</div></div>`;
-  }).join("");
+  }).join("")}</div></div>`;
 }
 
 function renderSubjects() {
@@ -271,11 +382,20 @@ function renderRecordings() {
 
 function renderCalendar() {
   const today = todayStr();
-  return `<div class="list cal">${D.calendar.map(c => {
-    const done = c.to < today;
+  const dates = [...D.calendar.flatMap(c => [c.from, c.to]), ...Object.keys(byDay)].filter(Boolean).sort();
+  if (!dates.length) return `<div class="empty">Графік ще не додано.</div>`;
+  const [fy, fm] = dates[0].split("-").map(Number), [ly, lm] = dates[dates.length - 1].split("-").map(Number);
+  let months = "";
+  for (let ym = [fy, fm - 1]; ym[0] * 12 + ym[1] <= ly * 12 + lm - 1; ym = shiftMonth(ym, 1)) months += monthHTML(...ym);
+  const list = [...D.calendar].sort((a, b) => (a.from || a.to).localeCompare(b.from || b.to)).map(c => {
+    const state = c.to < today ? "done" : (c.from || c.to) <= today ? "now" : "";
     const when = c.from ? `${fmtShort(c.from)} – ${fmtShort(c.to)}` : `до ${fmtShort(c.to)}`;
-    return `<div class="row ${done ? "done" : ""}"><div class="what"><div class="name">${esc(c.name)}</div></div><div class="when">${when}</div></div>`;
-  }).join("")}</div>`;
+    return `<div class="row ${state}"><i class="sw ${evType(c)}"></i><div class="what"><div class="name">${esc(c.name)}</div></div><div class="when">${when}</div></div>`;
+  }).join("");
+  return `<div class="legend"><span><i class="sw session"></i>сесія</span><span><i class="sw practice"></i>практика</span>
+      <span><i class="sw deadline"></i>дедлайн</span><span><i class="sw today"></i>сьогодні</span><span><i class="sw dot"></i>є заняття (натисніть, щоб відкрити)</span></div>
+    <div class="months">${months}</div>
+    <div class="list cal">${list}</div>`;
 }
 
 function renderLinks() {
@@ -290,6 +410,9 @@ const VIEWS = { schedule: renderSchedule, subjects: renderSubjects, recordings: 
 function render() {
   renderNext();
   document.querySelectorAll("nav.tabs button").forEach(b => b.setAttribute("aria-selected", b.dataset.tab === tab));
+  const nav = document.querySelector("nav.tabs"), sel = nav.querySelector("[aria-selected=true]");
+  if (sel.offsetLeft < nav.scrollLeft || sel.offsetLeft + sel.offsetWidth > nav.scrollLeft + nav.clientWidth)
+    nav.scrollLeft = sel.offsetLeft - 16;
   document.getElementById("view").innerHTML = VIEWS[tab]();
   const rs = document.getElementById("recSearch");
   if (rs) rs.addEventListener("input", () => {
@@ -308,8 +431,11 @@ function show(data) {
   document.title = `${D.group} · Фізика`;
   try { tab = sessionStorage.getItem("physics-site-tab") || tab; } catch {}
   if (!VIEWS[tab]) tab = "schedule";
+  byDay = {};
+  for (const s of D.sessions) (byDay[s.date] ||= []).push(s);
+  const n = new Date(); schedMonth = [n.getFullYear(), n.getMonth()];
   render();
-  document.getElementById("today")?.scrollIntoView({ block: "start" });
+  document.getElementById("d-" + todayStr())?.scrollIntoView({ block: "start" });
   // Refresh "live" highlighting; other tabs are static and may hold user input.
   setInterval(() => { if (document.hidden) return; tab === "schedule" ? render() : renderNext(); }, 60000);
 }
@@ -329,6 +455,24 @@ document.getElementById("loginForm").addEventListener("submit", async e => {
   } catch {
     err.textContent = "Невірний пароль";
   } finally { go.disabled = false; go.textContent = "Увійти"; }
+});
+
+const view = document.getElementById("view");
+view.addEventListener("click", e => {
+  const nav = e.target.closest("[data-nav]");
+  if (nav) {
+    const k = +nav.dataset.nav, n = new Date();
+    schedMonth = k ? shiftMonth(schedMonth, k) : [n.getFullYear(), n.getMonth()];
+    render();
+    if (!k) document.getElementById("d-" + todayStr())?.scrollIntoView({ behavior: "smooth", block: "start" });
+    return;
+  }
+  const day = e.target.closest("[data-day]");
+  if (day) goToDay(day.dataset.day);
+});
+view.addEventListener("keydown", e => {
+  const day = e.target.closest("[data-day]");
+  if (day && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); goToDay(day.dataset.day); }
 });
 
 document.getElementById("logout").addEventListener("click", () => { clearPw(); location.reload(); });
