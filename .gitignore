@@ -1,9 +1,8 @@
 # Private university documents (teachers' phone numbers) — never commit.
 artifacts/
 
-# The site is its own git repository.
-physics-site/
 
 # IDE / agent tool state
 .idea/
 .junie/
+.physics-site-old/
