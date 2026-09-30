@@ -1,0 +1,495 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Фізика · Магістратура</title>
+<style>
+:root {
+  --bg: #f6f7f9; --surface: #ffffff; --surface-2: #f0f2f5; --text: #1b1f24; --muted: #5f6b7a;
+  --border: #dde2e8; --accent: #2457d6; --accent-soft: #e7eefc; --live: #0f8a4a; --live-soft: #e3f5ea;
+  --danger: #c0352b; --radius: 12px;
+  --ev-session: #2457d6; --ev-session-soft: #dfe8fc; --ev-practice: #9a5b00; --ev-practice-soft: #fbedd5;
+  --ev-deadline: #c0352b;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #111418; --surface: #1a1e24; --surface-2: #222830; --text: #e8ebef; --muted: #99a3b0;
+    --border: #2d343e; --accent: #7aa2ff; --accent-soft: #1f2a44; --live: #4cd08a; --live-soft: #16301f;
+    --danger: #ff7b70;
+    --ev-session: #9dbaff; --ev-session-soft: #1f2d4d; --ev-practice: #f0b458; --ev-practice-soft: #3a2c14;
+    --ev-deadline: #ff7b70;
+  }
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--bg); color: var(--text);
+  font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+a { color: var(--accent); }
+.wrap { max-width: 920px; margin: 0 auto; padding: 24px 16px 64px; }
+[hidden] { display: none !important; }
+
+/* login */
+.login { min-height: 100vh; display: grid; place-items: center; padding: 16px; }
+.login form {
+  width: 100%; max-width: 360px; background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 28px 24px;
+}
+.login h1 { font-size: 20px; margin: 0 0 4px; }
+.login p { margin: 0 0 20px; color: var(--muted); }
+input[type=password], input[type=search] {
+  width: 100%; padding: 10px 12px; font: inherit; color: var(--text); background: var(--surface-2);
+  border: 1px solid var(--border); border-radius: 8px;
+}
+input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+button {
+  font: inherit; cursor: pointer; border-radius: 8px; border: 1px solid var(--border);
+  background: var(--surface); color: var(--text); padding: 8px 14px;
+}
+button.primary { width: 100%; margin-top: 12px; background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+.remember { display: flex; gap: 8px; align-items: center; margin-top: 12px; color: var(--muted); font-size: 14px; }
+.error { color: var(--danger); font-size: 14px; min-height: 1.5em; margin-top: 8px; }
+
+/* header */
+header { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; margin-bottom: 20px; }
+header h1 { font-size: 22px; margin: 0; line-height: 1.25; }
+header .sub { color: var(--muted); font-size: 14px; margin-top: 4px; }
+.actions { display: flex; gap: 8px; flex-shrink: 0; }
+.logout { font-size: 14px; }
+.pdf {
+  font-size: 14px; padding: 8px 14px; border: 1px solid var(--border); border-radius: 8px;
+  background: var(--surface); text-decoration: none;
+}
+
+/* next card */
+.next {
+  background: var(--accent-soft); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 16px 18px; margin-bottom: 20px;
+}
+.next.live { background: var(--live-soft); }
+.next .label { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+.next.live .label { color: var(--live); }
+.next .title { font-size: 18px; font-weight: 600; margin: 4px 0; }
+.next .meta { color: var(--muted); font-size: 14px; }
+.join {
+  display: inline-block; margin-top: 10px; padding: 8px 16px; border-radius: 8px; background: var(--accent);
+  color: #fff; text-decoration: none; font-weight: 600;
+}
+.next.live .join { background: var(--live); }
+
+/* tabs */
+nav.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin-bottom: 20px; overflow-x: auto; scrollbar-width: none; }
+nav.tabs button {
+  border: 0; border-bottom: 2px solid transparent; border-radius: 0; background: none; padding: 10px 12px;
+  color: var(--muted); white-space: nowrap;
+}
+nav.tabs button[aria-selected=true] { color: var(--text); border-bottom-color: var(--accent); font-weight: 600; }
+
+/* schedule */
+.day { margin-bottom: 20px; }
+.day h2 { font-size: 15px; margin: 0 0 8px; display: flex; gap: 8px; align-items: baseline; }
+.day h2 .dow { color: var(--muted); font-weight: 400; }
+.day.past { opacity: .55; }
+.day.today h2::after { content: "сьогодні"; font-size: 12px; font-weight: 600; color: var(--accent); background: var(--accent-soft); padding: 1px 8px; border-radius: 99px; }
+.list { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+.row { display: grid; grid-template-columns: 64px 1fr auto; gap: 12px; padding: 12px 14px; align-items: center; }
+.row + .row { border-top: 1px solid var(--border); }
+.row.live { background: var(--live-soft); }
+.row .time { font-variant-numeric: tabular-nums; font-weight: 600; }
+.row .time small { display: block; font-weight: 400; color: var(--muted); font-size: 12px; }
+.row .what { min-width: 0; }
+.row .what .name { font-weight: 500; }
+.row .what .who { color: var(--muted); font-size: 13px; }
+.tag { font-size: 11px; padding: 1px 7px; border-radius: 99px; background: var(--surface-2); color: var(--muted); margin-left: 6px; white-space: nowrap; }
+.row a.btn { font-size: 13px; padding: 6px 12px; border: 1px solid var(--border); border-radius: 8px; text-decoration: none; white-space: nowrap; }
+.row.live a.btn { background: var(--live); border-color: var(--live); color: #fff; }
+
+/* cards */
+.cards { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
+.card h3 { font-size: 15px; margin: 0 0 10px; }
+.card .t { padding: 8px 0; border-top: 1px solid var(--border); font-size: 14px; }
+.card .t .n { font-weight: 500; }
+.card .t .c { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 2px; }
+.card .note { color: var(--muted); font-size: 12px; margin-top: 4px; }
+.card .count { color: var(--muted); font-size: 13px; margin-top: 8px; }
+
+/* schedule layout: side calendar + day list */
+.sched { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 20px; align-items: start; }
+.sched aside { position: sticky; top: 12px; display: grid; gap: 10px; }
+.day.flash .list { outline: 2px solid var(--accent); outline-offset: 2px; }
+.calnav { display: flex; justify-content: space-between; align-items: center; gap: 6px; }
+.calnav button { padding: 4px 10px; }
+.calnav .todayBtn { flex: 1; font-size: 13px; }
+
+/* month grid */
+.months { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); }
+.month { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; }
+.month.current { border-color: var(--accent); }
+.month h3 { font-size: 14px; margin: 0 0 8px; text-align: center; }
+.mgrid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; font-size: 13px; }
+.mgrid .wd { color: var(--muted); font-size: 11px; padding: 2px 0; }
+.mgrid .d {
+  aspect-ratio: 1; display: grid; place-items: center; border-radius: 6px; position: relative;
+  font-variant-numeric: tabular-nums;
+}
+.mgrid .d.out { visibility: hidden; }
+.mgrid .d.we { color: var(--muted); }
+.mgrid .d.past { opacity: .5; }
+.mgrid .d.session { background: var(--ev-session-soft); color: var(--ev-session); font-weight: 600; }
+.mgrid .d.practice { background: var(--ev-practice-soft); color: var(--ev-practice); font-weight: 600; }
+.mgrid .d.deadline { box-shadow: inset 0 0 0 2px var(--ev-deadline); color: var(--ev-deadline); font-weight: 600; }
+.mgrid .d.today { background: var(--text); color: var(--bg); font-weight: 700; opacity: 1; }
+.mgrid .d.has { cursor: pointer; }
+.mgrid .d.has::after {
+  content: ""; position: absolute; bottom: 3px; left: 50%; width: 4px; height: 4px; margin-left: -2px;
+  border-radius: 50%; background: currentColor;
+}
+.mgrid .d.has:hover, .mgrid .d.has:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--muted); margin-bottom: 14px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 12px; height: 12px; border-radius: 3px; display: inline-block; flex-shrink: 0; }
+.sw.session { background: var(--ev-session-soft); box-shadow: inset 0 0 0 1px var(--ev-session); }
+.sw.practice { background: var(--ev-practice-soft); box-shadow: inset 0 0 0 1px var(--ev-practice); }
+.sw.deadline { box-shadow: inset 0 0 0 2px var(--ev-deadline); }
+.sw.today { background: var(--text); }
+.sw.dot { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); margin: 0 3px; }
+aside .legend { margin: 0; font-size: 12px; }
+
+.cal { margin-top: 20px; }
+.cal .row { grid-template-columns: 12px 1fr auto; }
+.cal .row .when { color: var(--muted); font-size: 14px; font-variant-numeric: tabular-nums; text-align: right; }
+.cal .row.done { opacity: .55; }
+.cal .row.now { background: var(--accent-soft); }
+
+.empty { color: var(--muted); background: var(--surface); border: 1px dashed var(--border); border-radius: var(--radius); padding: 24px; text-align: center; }
+.search { margin-bottom: 16px; }
+footer { margin-top: 40px; color: var(--muted); font-size: 13px; }
+
+@media (max-width: 760px) {
+  .sched { grid-template-columns: 1fr; }
+  .sched aside { position: static; grid-template-columns: 1fr 1fr; }
+  .sched aside .calnav, .sched aside .legend { grid-column: 1 / -1; }
+}
+@media (max-width: 560px) {
+  .sched aside .month { padding: 8px 6px; }
+  .sched aside .month h3 { font-size: 13px; margin-bottom: 4px; }
+  .sched aside .mgrid { font-size: 12px; gap: 1px; }
+  .sched aside .mgrid .wd { font-size: 10px; }
+  .sched aside .mgrid .d.has::after { bottom: 1px; }
+}
+@media (max-width: 560px) {
+  .row { grid-template-columns: 52px 1fr; }
+  .row a.btn { grid-column: 2; justify-self: start; }
+  .cal .row { grid-template-columns: 12px 1fr; }
+  .cal .row .when { grid-column: 2; text-align: left; }
+}
+</style>
+</head>
+<body>
+
+<div class="login" id="login">
+  <form id="loginForm" autocomplete="off">
+    <h1>Фізика · Магістратура</h1>
+    <p>Розклад, посилання на заняття та записи. Введіть пароль групи.</p>
+    <input type="password" id="pw" placeholder="Пароль" autofocus required aria-label="Пароль">
+    <label class="remember"><input type="checkbox" id="remember"> Запам'ятати на цьому пристрої</label>
+    <button class="primary" type="submit" id="go">Увійти</button>
+    <div class="error" id="err" role="alert"></div>
+  </form>
+</div>
+
+<div class="wrap" id="app" hidden>
+  <header>
+    <div>
+      <h1 id="hTitle"></h1>
+      <div class="sub" id="hSub"></div>
+    </div>
+    <div class="actions">
+      <a class="pdf" href="rozklad.pdf" download title="PDF відкривається тим самим паролем">PDF</a>
+      <button class="logout" id="logout">Вийти</button>
+    </div>
+  </header>
+  <div id="next"></div>
+  <nav class="tabs" role="tablist">
+    <button role="tab" data-tab="schedule">Розклад</button>
+    <button role="tab" data-tab="subjects">Предмети та викладачі</button>
+    <button role="tab" data-tab="recordings">Записи</button>
+    <button role="tab" data-tab="calendar">Графік навчання</button>
+    <button role="tab" data-tab="links" id="linksTab">Посилання</button>
+  </nav>
+  <section id="view"></section>
+  <footer id="foot"></footer>
+</div>
+
+<script>
+const PAYLOAD = {"salt":"WqLreaJh//iBFfk5jiqnHA==","iv":"E+OmEwlQyQb4pzpD","iter":310000,"ct":"jlERbRDdrGXkuXsJQZL3gqoJDdIqA0GGANN+w6Naa1Xx/p9AtkafBB6rIzEKTh+sjGXM1LY50Vy/O6fgn1gjMaxXOYVJY1MWCq0+MdsG0zESQWfUXbaFFUgSpB22jl8z0VRnP4YgFfcC/9WkVUjT37CMBAW8dtHGnr5rN5osOFjFGHFtQMSIv531psLaR5w1UTI9RX5AJ7kQzMDy1xUh0N0VVpnVsP5YVjWIPG3O5TchduS3TjgHp7yiPhx4dZA6ugrbEZmdElB3cqcDPq6j56XooOQbFvMDSyuOesTDQGv/YmWcUYIsmJNPOKZ4QbAkjK43HSwfdf5VeUkSOt2U9ulGiHx8crRjFlQzfz/TxjYcptGOeTvsE4wOyWuD/Du9IPKbDX5HVZsu9dGqKv0Pi7j5QHYRidHDxEsaV78bHSU/4Mm73czahZdByTtfIV8KDrvMXdVJph9PIAY+I9bLXX6Ujb4Z5f7vzMx7vaw/JZgZyUdlaRERasYvxAAC+vfnMD384yWqDVKCRlXTChEbFmHAF8XbNFCPx7rTYwwO44XNmoRxuYQ6C4lQPeLTko3WlzmIE2i0bTnudnpcODapVo5npU3pjoOOFuA9pQzLCeOXY32A8+Yz6csTY/LWB5s7piXixJ2jASpcuaOOAyPVKHG3AO/8oITlPzPpwt9XjvgFP75fuK04Rv5/WHnrsQ4jm9djWgVV3cGoaoLvmHodSvXGw3gX2w+PY5uP9eP3m+2bCOIdVtpWYop/ES4ditXJUafHKJ6N7d5oiwGJhV7CyI6UBkTFkJAFkrj7LlQE1q8IXK8254d80B8S0eD6qL+Ngi7g+h32pOQI15wrPG3aPqUO6m3aq+Dxua9ZYUIeczPCSNBdH5yje+j+rKvM9416smnQ3h5Hs49VUQjVz8/KA2hUO7CDPj/LhsaptfQdq7PfpAN0k6fPs8m+Aqz74XJx3zAns87amhexVfBe9PmhCS9cXvkwct3h/ee7guRTf1iA9Q5Rsmhx3g8eGjV++oaUC2wsH0974K58SIDnYR8SSeBVlyigF+3GqerzAqSyYKtFNe2ZflyiVKhCLMvEngfPe8h1IcESPy2LUq+31BK0LT6RaH3OTz8zbKldv+bgONziGieJk4IioaiWbx53vwKuIRXU3F9ojsce1AKwMK7srhdwFBbjHwijbyl5S6TnHAzbnvxl0Oo8GiVF9YnoQW+azUjEa4lXh8viv317QnMYczVL1mr0Goxii87khfBVoQ7kCyzaQsTXA9VeRzg7lO7m5QH7q+8Eq03iv6Wn6kfHVuDh54dCVbMC0vnaaj8zryyVrWH0jZ+hxoxWJXkYoMPpXuStZiAclbefevou3Hc2Ef1+SxS+2oi1Unvsv/Ba8rT1dqim4P1HdpFaZXQRjzccP2ASiFxSIErmnV8MGXWIsF9CsO+kUKi+K96rWKOKeadtnrAPlb3VUUczufevolXSv18rqbHM8EEySfSRKgudTQXvccodQMhM26yUhwLb8Yu9zqqU5Cm3hp/tAADRkhkvHJl8iNaSi91CWOLce87QN1sfOxJH36meUpSwthfMi/Wrm025wQ7w7c/Y5lwp9CJTKG5lIGfSgOPhgTWE94zTMcnLidM/p6K1I5mk12gLn27OJMz/BCFmAzXziuLkRWip6YhEsSDoIL6J6l8OBPX8i0a5RK60j7y/Ie9BGbHdhkpCtUmiDI5WL8Ak/npbIUNBuZ12szqY1jY0v86AB8mOmF4AlvswGFD/nUHratIGcPr1AZPm8MHIXAQcTc5Qje7AxxV19l7dwQapmSLV7jlE69n7e+cPT3eLL5Umg//LvDA4b5SW16jTtcL64a3J8WKGNh5pWOFlmtRvygBZ8nnCF7nxWFcc13S6UCyjuOQBU7oRmHPXzIT9ShG0okTy+hTxqR2nnokkpsAPu93xdPBz/ptbQDxH3QkkjcMAAwy08NDQmjHUqhpRa0oGxQfLd30uLfWYGRi97xQi5sBOdXZam8BTsG5/E+BdUYiDgMAGrBgamRWcUGmQ/8gNlLoQ2Kfa9uhFWTp0TD18k+q6e5gTGUw+BAj85MMjm6GzxkQatrLmuK7+Fbw0LdAw/Ah5jAFg62Sa4FHp+4feSyVI3s2mCtsr5lmNBYK0hUx6cqisckGMSNQf8vuhc/trCTbbYQBaCTzq0+HKUciGK8WfkurgP+4nGeOMuH4V1+0M4Zqr8sfy+/96Qsrg+pEj6/WWjukXV0YeFh5CmCuST9tCTPFWLP5qnit9rLKXixEbOgKb6Gk4lI0U2riXD8AZv38jPATODpb2Zq0Hoqm5hNmJX0MORLStV4rUzRoiNKterV3xRdEWrMDD2Kta4Se18mdQdMOa7ldhBQMGTZyPNDfgEUkEB6Wq9QL9plHHjFXrGK8Ydzi8zkEmqFQ6G5jvZAoas3mmvQ7U1SGs5gi/yf13uVutJAhrNKCJa4M7+1P/60S33b0ydEiFQupkdcpsJEAxfv+h11W/zoPxB9CV2dGNJ2BJ6sl1GSzzfGY3fjnQLwVuuvIf768dw/9YpamIdERzl1Bqpyk1DVVmk8jkHSYIB1mmOONb83+LSeIr3QPFw/tjnm4YcKIu/oswinpQ9PT5OHzTvTmywuSTwWubjJzUh7RqON2CUPFaiFSkxxhvcIV5MuHBn9FzxYQKGzI/TUSa8LVf7h/uVSyKYnhfKLnpvFVwCSowlNM47nhil19nmISMko5xNcT6tZSXi1ANCH2mn3ziqLbhnnW8wjNZkoUu/mXxyKSiLMHy0nBLRKF7GMpKZyCgZKRboiaq7BhX4p0dXER2j2KI6F/vqJFjqnIuCKU+NzzdXM9/ladzgU3cPGpfdngNdGQpEtzCrruY4Fg1OavHAJajvWqkiRKsRzWtamT2WHWFvd8r21dvyqrvSCFbZl6ORSX1R9JlGRHZQX/gEFux+jeNhDwgL6+K16UnK18M/IEaVO1v8PJM9Lr4RtpukXWVOW/QySKrAwiaaQBK+EPb1ivj5PFGC5YFaLQqpOB2rTrXlVioXL7zMCe0/jTpMsZZEpR6o2xMoGehnvc3IYji9/KRkL1m8+wYT/ucHhodDztDAZTcY61qcJj/2/WQfvNXzbdDzI6ujOiWUfB6K5bgTAh3hxeFMJlwUvB0xq5XfLxYNssRZ7r0+tihfI7tp0n1Z4k91oJ8+umnFDvMKlZ6pz8z2RKDG9AqgoFd3Po2+I2vhLu8WJFdKgqzpB5anHixGWGBp+fQPvaZcGVvBdRLj+25fLDpGvxB2Jl8ZcUYnoRpSvr+N2tnhUHCVGipih0dtjNk8NG6Ng+0+s6JA4tyh6N156LT6I2zte/i1QYklqxftWAzDuNtWv+5EVgci5Qg0r2+sWRJ9MilteiMfXbgTn8YRPs3d6WodQRgY7s9YgYX1Zc/ZRIZp7RpDlMxqTBWmoIyeo6ZKvvRoD+vckAuKY0nMn9CIZRVz1OaxZ2vgOBu7FdSgmpx7YtcGE6FyeTwJqoWCUjSf57RF4tVYBhA7uFkrjX0BSECtNey9VhCIi6Wh6C5oeY5lgFCSo/OHhpDtiU0xms76cqmwn34hpZQd86lKi1Vuzg9OG6jQ8ieQd8Zu5KKgUCnpPO97/DmsvGXJ4/8xI7pwWcPlV0cW8Qr/d8Qp1I501+wuTyHKq2DEeWMC4IJrg+0ULPBUFfycz8tR9ZDhxW2Q4Id9H6xn7VRXZq07nHqVHEydU4IMqZE6HrndKWbpPDanb5P3QeLdMzS3aSnxUT62MXg43KizcPLJ8L7FDygrBePInkPR4Xx+pSw9JAKmnsziRG3ncPXjzR75LVus7ACsEtG831qWQEZe5BDPGR4nhz8y9mBKXPy+B3ItIpRzM+2gyOzqAR2l0pagdzdCjL1iOisTTNzB5VScpu9K5hrSm39ppXIYpEz/9MvlPUYJiX3NE1fjCvnUAlxVmzV7qHYFx5J/Ca5NCa/ElfQcnKFnTWTHL/wuzPMtnlxAHEI1Gsfyr9ZoXq7a0vrwrkN31exBLjfsTinoInx5Q+s2JyD+DSDWfIO45ejKxoCCtsYhqAHxlc47aIF4CvkGO1PFgsm6TiuzsN+P8kReBTnDPVMQb0HsPO2x/ZaIV3bSuGw1E4DkWhJ8+wCHi2nCBrRH5fDpnnwmypy3TVHFmSqdupRuzVNnS6SNYxzucR6hDNu0y8yN3Dxo0Pmb2ww5fqj5HogE3tvk+Jzz1IW+E3s7gcaK2mRt64SMlbKneIUPdA8v6IzsH785pkpcUhCEtWMrhXfEAvOwKfSZxQNBkiQPK0luRCMIg6UJxUnzjqluEl1q+pckUQhlef6MsByKnIAp8mAoNYZuEtQjwcZiHHlDfOUplVvP4HVWrIfFYrCv8bjv88rewMgCZui0Xy07yO6+FcPQ9sVlR+MdBeNY/NizJvNjIwH4r/DOGBPQy5YGs5wYzp9+YkvkjqWrkY77qHnmzBf30DAibfRi9QdC2kOxk0QtMbl5gl3yfrSZoUlz5QbFhs1qqjdeSjgIsC8mKKyzcR787kcZOxfaW82JpGWtuHvnWjdgZCTyecL9q70bSaX/yJ4RsVleEeuh4IUTgTfVFNEGT3PCgAQpBKPsptzSI7foen9OanXgVaDc4/tOu7d3DvgT5buXq7eFez+H8kjMPmThmH84lWqPjElcaUrPc0rylCqm8Qisix1Y28e26zIlaYr04SGo7FmfWUQ18hHSLvZCBqt7qq1FWDvNEkMENZco03WK+EXgqwo6JqTjPxFVj9kOJoU9TpRXWSgVhg85NaUml1KO/tWrN7kEnvfIyHKoZGYIW5385x91c43JgCnCxjQ90JI79IaUyg7XqFiunijja8sZTkuRH1ucB1i2myXLX6XHfHqs131otw2dSELuNVKK2oL1YvhAj1FMNLv2j189hUf1H9p2HomENKDd/al13PDwYC4dQgmeSuVoxDLK2Sz3wvVcqIeuFfJ6UwIYGufcNEHZzwjcOqtSa1NGESNrd8Qa3pHIufuLUkFCUDOHdaBpT9GpbI28Ha5yXe9nSU+RMEL865jYTPhOrpiODpv4/Zi448ZJhi4BglWhSfOV3w3ClWdW8W6sLxsTGsFSY5g+glrKlv9DVmlPtEK+Tusg9UODVrygVmWwD4ypEEK98GI6GIkgTAPwJufRt4dMX2y1mJbRpWHAK8QGO0jEmoXeVt0GpRpLPD/5QP5WQCn6u1YOV2IhY7x6cxjUptti15bU6Cf2DIi1wxrxIpWlEV7adq+lHgqyyKlnXWM78+IUu3gAPKQKR+FZbqoYeIvGDn4hhD7q4N2YHu3c32E7kOOYbYRyTo1kUo7GiUmaGQh/QByqGH9w8xzewAItx+drLUmoumdy9gKOIcWLO0bb2noH3fA1VmBAkb9H34yCQB5rj/ACTn8KoijoLfjgte4Kv7aEoIFX3ng26KDdByhjmrc/ZytWKxFQl6DFpCYAMO2ZKP4O+N8WgeAXXyW1dcIyqLkxvlUWqL8rSVIfR1ZnMqBGTA9zW9M38D0vp1iRc6gipkw+0emvA7ykzt5k7qXFeoXdEhV1/g0zQLFHeOYKgihIffbFkxDQk/ViSxF+hJ5/1HstBU6y8qDg4BsE9pnOcRav2NEcflcsDROey/5ioCQzKi9LzW/vftehxpoLJaN2AX5N3QhiEcjqayfgGSwoB18LHa6wDXQ6lst3ljjx56CTocS4+C8Drm0DiRUun8Z5Ea72BStU8rK1n+d6jWJLp38ANX2RiarH30CpWkLBg1s6QdTlGNd1M03s+akULb5o1B/cGRmvEnxF3d1dOPg10tSgaJQVWGRNqGV3R+5s3NpsxjUP9fjzWRTUggnm2ur0ccZIVuQSEotwu5NIHcFVE7TD9B8O1sPXArhw3INSMKvNBAY5TiYNLIy8FoaSO6X7CbuXaASXTAbkFWiq+5nqYGBqZkPMEZoSz4Yndz9Ck+zTWI+rMeDMfPGh0intr0CnG0+prCgE/1dssDa0s/rFDfhk14m0ayy6qUlk06pMkW3QHhuVxKCP0Binlsi2mzvD/vwDahaEUISZcyqeKzaviTxlN6yAiqDiYoks18gmg8LDEqiwlU19TJ9LUpWk5LHBRe0E5op+4riXS1Tcm1NzjHqjVGuYxLWeox3PNL03YFobP1xRy39y5BZENJVWG9EnFaRf+T0byPf9tDM9iKq6HVR2mmNgsMlnuGLXclJLskutw8khdsSrwxqU344q7gxNbw2HOhnmkpOSpFi3FWLkzZZ+5hjzYRZ/k0qcHCrSCUhCqG487UsyVWdlafKwxajboWA+a/urYiGrXqa31YRvBMss0F6tFsGinJKhvc4yIbPHxrG3bU73bN7k1QT0l/l9Fr2koXdGStsMEpT+dKuX5FrptfOxFwFXRdseeJnTkPR0H/IGE2T3aRFcqcBTu4PP3zyAk2dWA3+7U/iCpIUktUxhTOPcUAnMMAMieJ7BuHC+BFIjrYdCOC4tLw5WaXODSEBWifMeUxkFAifyzLeQb2Ho+FmO/XK++sFpQdvKnQp8qVHRXdQdTxM6yTQyuSCsoWWHyj1oR6jpVPInyxNVjDczbl8fJD0+eDJSjSfkzhcUuE/ehUQpsl3WR6YRgvJmCqvyVIVGqMWUWA5Y8NISAyyeDaSFdzJMGaEwfsBLHkf77mtehH1HVxV0EtjtVqtZH3/Mkjosthkt9W/yV+qMO1vVpacPS0lJqupGv8nhKsGXnMffKV6UST2MVXUoHmt1K6B8j5p9WfEk9ft7oZiWnIayneeKYjhyenaZ/91b/mcIDyuF6zXXw3ZSEmzBHD1Vp7v/8zIVeS0pU6keRsZkch72iI97spVjeEZMHgBf5brn9hbneo77QMqTyAmgRJlLhGsMuOv0IbyT3AuEdlRrbnM/RFX4Sdoh5cGToro6JHmt7IPrIEXr97yV0/zq1nU7CGKl4Y8BRsscljyo13mvPXpDIBZW27XvvAzD61S7dK+xEFynyVFYvKSzoJnAjwYchGVDVrpSZNbvB//OK4+2ym1Cm48WgasDrNzRsH67Yj2n3DWg2h76ZxZyqmzb9lfuI5aQls0LLKbK/cAoI14sNTGKDSrUB9dDjPeFmh3DS3CxH//ZZU8OngjEeL9hlzEGge5u4G2Uf9o41/APmlSD6K0y2DxZ6DI4Atn3JBa+xOt2pLwzsEapQbtP7u+3w3qwCIRLGkmKVYat56MIhU5v6oadyJAQANj0h7WmzRpTl5VJETlbPB77MQNx3/w3LgZJqbS1j2qcQykDf+cI3C+MJDD0SqnDkLjkIFymVT5+yT8RbmEsBcDAvgediE3Mj9+/h3LxTf5odrVNOKJ49q8OPPQ5i8vdA4P8wjjzf/fwpjshMqJqt3JZ9N2CX4bcArlvAxJFUXwIFWMBNxTMWwa2cFcj0x7Jy0zZJYZTBw+pNYyk2oTGJTtR45Jl3PGm2mhGhVsdOcKW36je5MGFdxD7iglKW4R7Kd1L5Pf69I6XzUK5uI1SpZG7RbX9GR5u70eckfwAnZ2nNwOuhWr59n+zI3oabdal+fpQJKQcFpbx2EHzvzCQikfDhObsbpa9DaPgByZ1I8J2Kc80zYJgsXt/8UJukpYrwiqRDTELKiUWRUudpcsZij/0nogXMFG80Hs8G2OvxetaZLFJAanbWFUafanhEJuV1SXUIcg1WTru6Yfomje/FpdEGorjtKAOc7Nqf0STEB0shR+V0RoNkxvaQQE6epC/s/Tqb2VBCJdOIInX2MuGV7BcozqAgJ1PW65ubSMDpCLiDwJp2udalcRVtk7N1nMQe4gi+x8dne6jwDYD8u0UTFeEU9i2UGwmcXWEK120WsP+WXRGoQNnAETCZ1+XudC3kLjG7Ad0d6y00rySk3RyimdxlNzxjHPWe4BW5W+pIcd+H0o2Yps8andt7TDeNxVxGbTrBj5Ww763Za9lAkb0fRXkJe9IpIuBmjxCQwpMBqpdclh1hyMmSTpIAaMlsHB5ibz/xc="};
+const STORE_KEY = "physics-site-pw";
+
+const b64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+async function decrypt(password) {
+  const base = await crypto.subtle.importKey("raw", new TextEncoder().encode(password), "PBKDF2", false, ["deriveKey"]);
+  const key = await crypto.subtle.deriveKey(
+    { name: "PBKDF2", salt: b64(PAYLOAD.salt), iterations: PAYLOAD.iter, hash: "SHA-256" },
+    base, { name: "AES-GCM", length: 256 }, false, ["decrypt"]);
+  const plain = await crypto.subtle.decrypt({ name: "AES-GCM", iv: b64(PAYLOAD.iv) }, key, b64(PAYLOAD.ct));
+  return JSON.parse(new TextDecoder().decode(plain));
+}
+
+function store(kind) { try { return kind === "local" ? localStorage : sessionStorage; } catch { return null; } }
+function savePw(pw, remember) { try { store(remember ? "local" : "session")?.setItem(STORE_KEY, pw); } catch {} }
+function loadPw() { try { return store("session")?.getItem(STORE_KEY) || store("local")?.getItem(STORE_KEY); } catch { return null; } }
+function clearPw() { for (const k of ["session", "local"]) try { store(k)?.removeItem(STORE_KEY); } catch {} }
+
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const safeUrl = u => /^https?:\/\//i.test(u || "") ? u : "#";
+const DOW = ["неділя", "понеділок", "вівторок", "середа", "четвер", "п'ятниця", "субота"];
+const MON = ["січня", "лютого", "березня", "квітня", "травня", "червня", "липня", "серпня", "вересня", "жовтня", "листопада", "грудня"];
+const KIND = { "л": "лекція", "пр": "практичне", "лаб": "лабораторна" };
+const parseDate = d => { const [y, m, dd] = d.split("-").map(Number); return new Date(y, m - 1, dd); };
+const at = (d, t) => { const x = parseDate(d); const [h, mi] = t.split(":").map(Number); x.setHours(h, mi); return x; };
+const fmtDay = d => { const x = parseDate(d); return `${x.getDate()} ${MON[x.getMonth()]}`; };
+const fmtShort = d => { const x = parseDate(d); return `${String(x.getDate()).padStart(2, "0")}.${String(x.getMonth() + 1).padStart(2, "0")}.${x.getFullYear()}`; };
+const addMin = (t, m) => { const [h, mi] = t.split(":").map(Number); const x = h * 60 + mi + m; return `${String(Math.floor(x / 60)).padStart(2, "0")}:${String(x % 60).padStart(2, "0")}`; };
+const todayStr = () => { const n = new Date(); return `${n.getFullYear()}-${String(n.getMonth() + 1).padStart(2, "0")}-${String(n.getDate()).padStart(2, "0")}`; };
+const tel = p => `tel:+38${String(p).replace(/\D/g, "")}`;
+
+const MONN = ["Січень", "Лютий", "Березень", "Квітень", "Травень", "Червень", "Липень", "Серпень", "Вересень", "Жовтень", "Листопад", "Грудень"];
+const WD = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"];
+const EV_TYPES = { session: "Сесія", practice: "Практика", deadline: "Дедлайн" };
+const ymd = (y, m, d) => `${y}-${String(m + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+const lessons = n => `${n} ${n % 10 >= 1 && n % 10 <= 4 && !(n % 100 >= 11 && n % 100 <= 14) ? "заняття" : "занять"}`;
+
+let D, tab = "schedule", byDay = {}, schedMonth; // schedMonth: [year, month] shown first in the side calendar
+
+const evType = c => EV_TYPES[c.type] ? c.type : "session";
+// Deadlines (no `from`) mark only their last day; periods mark every day from..to.
+const eventsOn = ds => D.calendar.filter(c => c.from ? c.from <= ds && ds <= c.to : ds === c.to);
+
+function monthHTML(y, m) {
+  const today = todayStr(), off = (new Date(y, m, 1).getDay() + 6) % 7, days = new Date(y, m + 1, 0).getDate();
+  let cells = WD.map(w => `<div class="wd">${w}</div>`).join("") + `<div class="d out"></div>`.repeat(off);
+  for (let d = 1; d <= days; d++) {
+    const ds = ymd(y, m, d), ev = eventsOn(ds), n = byDay[ds]?.length || 0, cls = ["d"];
+    const period = ev.find(e => evType(e) !== "deadline");
+    if (period) cls.push(evType(period));
+    if (ev.some(e => evType(e) === "deadline")) cls.push("deadline");
+    if ((off + d - 1) % 7 >= 5) cls.push("we");
+    if (ds === today) cls.push("today"); else if (ds < today) cls.push("past");
+    if (n) cls.push("has");
+    const tip = [ds === today ? "Сьогодні" : "", ...ev.map(e => e.name), n ? lessons(n) : ""].filter(Boolean).join("\n");
+    cells += `<div class="${cls.join(" ")}"${n ? ` data-day="${ds}" role="button" tabindex="0"` : ""}${tip ? ` title="${esc(tip)}"` : ""}>${d}</div>`;
+  }
+  const cur = today.startsWith(ymd(y, m, 1).slice(0, 7));
+  return `<div class="month ${cur ? "current" : ""}"><h3>${MONN[m]} ${y}</h3><div class="mgrid">${cells}</div></div>`;
+}
+
+const shiftMonth = ([y, m], k) => { const x = new Date(y, m + k, 1); return [x.getFullYear(), x.getMonth()]; };
+
+function goToDay(ds) {
+  const [y, m] = ds.split("-").map(Number);
+  if (tab !== "schedule") { tab = "schedule"; try { sessionStorage.setItem("physics-site-tab", tab); } catch {} }
+  // Keep the side calendar where it is if the day is already visible in one of its two months.
+  const shown = [schedMonth, shiftMonth(schedMonth, 1)].some(([sy, sm]) => sy === y && sm === m - 1);
+  if (!shown) schedMonth = [y, m - 1];
+  render();
+  const el = document.getElementById("d-" + ds);
+  if (!el) return;
+  el.scrollIntoView({ behavior: "smooth", block: "start" });
+  el.classList.add("flash"); setTimeout(() => el.classList.remove("flash"), 1500);
+}
+
+function sessionLink(s) { return s.link || D.teachers[s.teacher]?.link || ""; }
+function sessionState(s, now) {
+  const start = at(s.date, s.time), end = new Date(start.getTime() + D.slotMinutes * 60000);
+  return now >= end ? "past" : now >= start ? "live" : "future";
+}
+
+function renderNext() {
+  const now = new Date();
+  const sorted = [...D.sessions].sort((a, b) => at(a.date, a.time) - at(b.date, b.time));
+  const s = sorted.find(x => sessionState(x, now) !== "past");
+  const el = document.getElementById("next");
+  if (!s) { el.innerHTML = ""; return; }
+  const live = sessionState(s, now) === "live";
+  const subj = D.subjects[s.subject], t = D.teachers[s.teacher];
+  const link = sessionLink(s);
+  el.innerHTML = `<div class="next ${live ? "live" : ""}">
+    <div class="label">${live ? "Зараз іде" : "Наступне заняття"}</div>
+    <div class="title">${esc(subj?.name)}${s.kind ? `<span class="tag">${esc(KIND[s.kind] || s.kind)}</span>` : ""}</div>
+    <div class="meta">${DOW[parseDate(s.date).getDay()]}, ${fmtDay(s.date)} · ${s.time}–${addMin(s.time, D.slotMinutes)}${t ? " · " + esc(t.name) : ""}</div>
+    ${link ? `<a class="join" href="${esc(safeUrl(link))}" target="_blank" rel="noopener">Приєднатися</a>` : ""}
+  </div>`;
+}
+
+function renderSchedule() {
+  const now = new Date(), today = todayStr();
+  const keys = Object.keys(byDay).sort();
+  const aside = `<aside>
+    <div class="calnav">
+      <button data-nav="-1" aria-label="Попередній місяць">‹</button>
+      <button class="todayBtn" data-nav="0">Сьогодні</button>
+      <button data-nav="1" aria-label="Наступний місяць">›</button>
+    </div>
+    ${monthHTML(...schedMonth)}${monthHTML(...shiftMonth(schedMonth, 1))}
+    <div class="legend"><span><i class="sw today"></i>сьогодні</span><span><i class="sw dot"></i>є заняття</span>
+      <span><i class="sw session"></i>сесія</span><span><i class="sw practice"></i>практика</span></div>
+  </aside>`;
+  if (!keys.length) return `<div class="sched">${aside}<div class="empty">Розклад ще не додано.</div></div>`;
+  return `<div class="sched">${aside}<div>${keys.map(d => {
+    const cls = d < today ? "past" : d === today ? "today" : "";
+    const rows = [...byDay[d]].sort((a, b) => a.time.localeCompare(b.time)).map(s => {
+      const subj = D.subjects[s.subject], t = D.teachers[s.teacher], link = sessionLink(s);
+      const st = sessionState(s, now);
+      return `<div class="row ${st === "live" ? "live" : ""}">
+        <div class="time">${s.time}<small>до ${addMin(s.time, D.slotMinutes)}</small></div>
+        <div class="what"><div class="name">${esc(subj?.name || s.subject)}${s.kind ? `<span class="tag">${esc(KIND[s.kind] || s.kind)}</span>` : ""}</div>
+          <div class="who">${esc(t?.name || "")}</div></div>
+        ${link ? `<a class="btn" href="${esc(safeUrl(link))}" target="_blank" rel="noopener">${st === "live" ? "Приєднатися" : "Посилання"}</a>` : "<span></span>"}
+      </div>`;
+    }).join("");
+    return `<div class="day ${cls}" id="d-${d}">
+      <h2>${fmtDay(d)} <span class="dow">${DOW[parseDate(d).getDay()]}</span></h2>
+      <div class="list">${rows}</div></div>`;
+  }).join("")}</div></div>`;
+}
+
+function renderSubjects() {
+  return `<div class="cards">${Object.entries(D.subjects).map(([id, s]) => {
+    const n = D.sessions.filter(x => x.subject === id).length;
+    const r = D.recordings.filter(x => x.subject === id).length;
+    const teachers = s.teachers.map(tid => {
+      const t = D.teachers[tid]; if (!t) return "";
+      return `<div class="t"><div class="n">${esc(t.name)}</div><div class="c">
+        ${t.phone ? `<a href="${tel(t.phone)}">${esc(t.phone)}</a>` : ""}
+        ${t.link ? `<a href="${esc(safeUrl(t.link))}" target="_blank" rel="noopener">Посилання на заняття</a>` : ""}
+      </div>${t.note ? `<div class="note">${esc(t.note)}</div>` : ""}</div>`;
+    }).join("");
+    return `<div class="card"><h3>${esc(s.name)}</h3>${teachers}
+      <div class="count">Занять у сесії: ${n}${r ? ` · записів: ${r}` : ""}</div></div>`;
+  }).join("")}</div>`;
+}
+
+function renderRecordings() {
+  if (!D.recordings.length) return `<div class="empty">Записів поки немає. Вони з'являться тут після занять.</div>`;
+  const list = [...D.recordings].sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+  return `<input type="search" class="search" id="recSearch" placeholder="Пошук за предметом або темою" aria-label="Пошук записів">
+    <div class="list" id="recList">${list.map(r => {
+      const subj = D.subjects[r.subject]?.name || r.subject || "";
+      return `<div class="row" data-q="${esc((subj + " " + (r.title || "")).toLowerCase())}">
+        <div class="time">${r.date ? fmtShort(r.date).slice(0, 5) : ""}${r.time ? `<small>${esc(r.time)}</small>` : ""}</div>
+        <div class="what"><div class="name">${esc(r.title || subj)}</div><div class="who">${r.title ? esc(subj) : ""}</div></div>
+        <a class="btn" href="${esc(safeUrl(r.url))}" target="_blank" rel="noopener">Дивитися</a>
+      </div>`;
+    }).join("")}</div>`;
+}
+
+function renderCalendar() {
+  const today = todayStr();
+  const dates = [...D.calendar.flatMap(c => [c.from, c.to]), ...Object.keys(byDay)].filter(Boolean).sort();
+  if (!dates.length) return `<div class="empty">Графік ще не додано.</div>`;
+  const [fy, fm] = dates[0].split("-").map(Number), [ly, lm] = dates[dates.length - 1].split("-").map(Number);
+  let months = "";
+  for (let ym = [fy, fm - 1]; ym[0] * 12 + ym[1] <= ly * 12 + lm - 1; ym = shiftMonth(ym, 1)) months += monthHTML(...ym);
+  const list = [...D.calendar].sort((a, b) => (a.from || a.to).localeCompare(b.from || b.to)).map(c => {
+    const state = c.to < today ? "done" : (c.from || c.to) <= today ? "now" : "";
+    const when = c.from ? `${fmtShort(c.from)} – ${fmtShort(c.to)}` : `до ${fmtShort(c.to)}`;
+    return `<div class="row ${state}"><i class="sw ${evType(c)}"></i><div class="what"><div class="name">${esc(c.name)}</div></div><div class="when">${when}</div></div>`;
+  }).join("");
+  return `<div class="legend"><span><i class="sw session"></i>сесія</span><span><i class="sw practice"></i>практика</span>
+      <span><i class="sw deadline"></i>дедлайн</span><span><i class="sw today"></i>сьогодні</span><span><i class="sw dot"></i>є заняття (натисніть, щоб відкрити)</span></div>
+    <div class="months">${months}</div>
+    <div class="list cal">${list}</div>`;
+}
+
+function renderLinks() {
+  if (!D.links.length) return `<div class="empty">Корисних посилань поки немає.</div>`;
+  return `<div class="list">${D.links.map(l => `<div class="row" style="grid-template-columns:1fr auto">
+    <div class="what"><div class="name">${esc(l.title)}</div>${l.note ? `<div class="who">${esc(l.note)}</div>` : ""}</div>
+    <a class="btn" href="${esc(safeUrl(l.url))}" target="_blank" rel="noopener">Відкрити</a></div>`).join("")}</div>`;
+}
+
+const VIEWS = { schedule: renderSchedule, subjects: renderSubjects, recordings: renderRecordings, calendar: renderCalendar, links: renderLinks };
+
+function render() {
+  renderNext();
+  document.querySelectorAll("nav.tabs button").forEach(b => b.setAttribute("aria-selected", b.dataset.tab === tab));
+  const nav = document.querySelector("nav.tabs"), sel = nav.querySelector("[aria-selected=true]");
+  if (sel.offsetLeft < nav.scrollLeft || sel.offsetLeft + sel.offsetWidth > nav.scrollLeft + nav.clientWidth)
+    nav.scrollLeft = sel.offsetLeft - 16;
+  document.getElementById("view").innerHTML = VIEWS[tab]();
+  const rs = document.getElementById("recSearch");
+  if (rs) rs.addEventListener("input", () => {
+    const q = rs.value.trim().toLowerCase();
+    document.querySelectorAll("#recList .row").forEach(r => r.hidden = q && !r.dataset.q.includes(q));
+  });
+}
+
+function show(data) {
+  D = Object.assign({ teachers: {}, subjects: {}, sessions: [], recordings: [], links: [], calendar: [], slotMinutes: 80 }, data);
+  document.getElementById("login").hidden = true;
+  document.getElementById("app").hidden = false;
+  document.getElementById("hTitle").textContent = D.title;
+  document.getElementById("hSub").textContent = `Група ${D.group} · ${D.program}`;
+  document.getElementById("foot").textContent = D.university || "";
+  document.title = `${D.group} · Фізика`;
+  try { tab = sessionStorage.getItem("physics-site-tab") || tab; } catch {}
+  if (!VIEWS[tab]) tab = "schedule";
+  byDay = {};
+  for (const s of D.sessions) (byDay[s.date] ||= []).push(s);
+  const n = new Date(); schedMonth = [n.getFullYear(), n.getMonth()];
+  render();
+  document.getElementById("d-" + todayStr())?.scrollIntoView({ block: "start" });
+  // Refresh "live" highlighting; other tabs are static and may hold user input.
+  setInterval(() => { if (document.hidden) return; tab === "schedule" ? render() : renderNext(); }, 60000);
+}
+
+document.querySelectorAll("nav.tabs button").forEach(b => b.addEventListener("click", () => {
+  tab = b.dataset.tab; try { sessionStorage.setItem("physics-site-tab", tab); } catch {} render();
+}));
+
+document.getElementById("loginForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const pw = document.getElementById("pw").value, err = document.getElementById("err"), go = document.getElementById("go");
+  err.textContent = ""; go.disabled = true; go.textContent = "Перевірка…";
+  try {
+    const data = await decrypt(pw);
+    savePw(pw, document.getElementById("remember").checked);
+    show(data);
+  } catch {
+    err.textContent = "Невірний пароль";
+  } finally { go.disabled = false; go.textContent = "Увійти"; }
+});
+
+const view = document.getElementById("view");
+view.addEventListener("click", e => {
+  const nav = e.target.closest("[data-nav]");
+  if (nav) {
+    const k = +nav.dataset.nav, n = new Date();
+    schedMonth = k ? shiftMonth(schedMonth, k) : [n.getFullYear(), n.getMonth()];
+    render();
+    if (!k) document.getElementById("d-" + todayStr())?.scrollIntoView({ behavior: "smooth", block: "start" });
+    return;
+  }
+  const day = e.target.closest("[data-day]");
+  if (day) goToDay(day.dataset.day);
+});
+view.addEventListener("keydown", e => {
+  const day = e.target.closest("[data-day]");
+  if (day && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); goToDay(day.dataset.day); }
+});
+
+document.getElementById("logout").addEventListener("click", () => { clearPw(); location.reload(); });
+
+(async () => {
+  if (!PAYLOAD) { document.getElementById("err").textContent = "Сайт ще не зібрано (node build.mjs)."; return; }
+  const saved = loadPw();
+  if (saved) { try { show(await decrypt(saved)); } catch { clearPw(); } }
+})();
+</script>
+</body>
+</html>

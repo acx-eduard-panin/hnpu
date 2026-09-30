@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Фізика · Магістратура</title>
+<style>
+:root {
+  --bg: #f6f7f9; --surface: #ffffff; --surface-2: #f0f2f5; --text: #1b1f24; --muted: #5f6b7a;
+  --border: #dde2e8; --accent: #2457d6; --accent-soft: #e7eefc; --live: #0f8a4a; --live-soft: #e3f5ea;
+  --danger: #c0352b; --radius: 12px;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #111418; --surface: #1a1e24; --surface-2: #222830; --text: #e8ebef; --muted: #99a3b0;
+    --border: #2d343e; --accent: #7aa2ff; --accent-soft: #1f2a44; --live: #4cd08a; --live-soft: #16301f;
+    --danger: #ff7b70;
+  }
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--bg); color: var(--text);
+  font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+a { color: var(--accent); }
+.wrap { max-width: 920px; margin: 0 auto; padding: 24px 16px 64px; }
+[hidden] { display: none !important; }
+
+/* login */
+.login { min-height: 100vh; display: grid; place-items: center; padding: 16px; }
+.login form {
+  width: 100%; max-width: 360px; background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 28px 24px;
+}
+.login h1 { font-size: 20px; margin: 0 0 4px; }
+.login p { margin: 0 0 20px; color: var(--muted); }
+input[type=password], input[type=search] {
+  width: 100%; padding: 10px 12px; font: inherit; color: var(--text); background: var(--surface-2);
+  border: 1px solid var(--border); border-radius: 8px;
+}
+input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+button {
+  font: inherit; cursor: pointer; border-radius: 8px; border: 1px solid var(--border);
+  background: var(--surface); color: var(--text); padding: 8px 14px;
+}
+button.primary { width: 100%; margin-top: 12px; background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+.remember { display: flex; gap: 8px; align-items: center; margin-top: 12px; color: var(--muted); font-size: 14px; }
+.error { color: var(--danger); font-size: 14px; min-height: 1.5em; margin-top: 8px; }
+
+/* header */
+header { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; margin-bottom: 20px; }
+header h1 { font-size: 22px; margin: 0; line-height: 1.25; }
+header .sub { color: var(--muted); font-size: 14px; margin-top: 4px; }
+.logout { flex-shrink: 0; font-size: 14px; }
+
+/* next card */
+.next {
+  background: var(--accent-soft); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 16px 18px; margin-bottom: 20px;
+}
+.next.live { background: var(--live-soft); }
+.next .label { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+.next.live .label { color: var(--live); }
+.next .title { font-size: 18px; font-weight: 600; margin: 4px 0; }
+.next .meta { color: var(--muted); font-size: 14px; }
+.join {
+  display: inline-block; margin-top: 10px; padding: 8px 16px; border-radius: 8px; background: var(--accent);
+  color: #fff; text-decoration: none; font-weight: 600;
+}
+.next.live .join { background: var(--live); }
+
+/* tabs */
+nav.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin-bottom: 20px; overflow-x: auto; scrollbar-width: none; }
+nav.tabs button {
+  border: 0; border-bottom: 2px solid transparent; border-radius: 0; background: none; padding: 10px 12px;
+  color: var(--muted); white-space: nowrap;
+}
+nav.tabs button[aria-selected=true] { color: var(--text); border-bottom-color: var(--accent); font-weight: 600; }
+
+/* schedule */
+.day { margin-bottom: 20px; }
+.day h2 { font-size: 15px; margin: 0 0 8px; display: flex; gap: 8px; align-items: baseline; }
+.day h2 .dow { color: var(--muted); font-weight: 400; }
+.day.past { opacity: .55; }
+.day.today h2::after { content: "сьогодні"; font-size: 12px; font-weight: 600; color: var(--accent); background: var(--accent-soft); padding: 1px 8px; border-radius: 99px; }
+.list { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+.row { display: grid; grid-template-columns: 64px 1fr auto; gap: 12px; padding: 12px 14px; align-items: center; }
+.row + .row { border-top: 1px solid var(--border); }
+.row.live { background: var(--live-soft); }
+.row .time { font-variant-numeric: tabular-nums; font-weight: 600; }
+.row .time small { display: block; font-weight: 400; color: var(--muted); font-size: 12px; }
+.row .what { min-width: 0; }
+.row .what .name { font-weight: 500; }
+.row .what .who { color: var(--muted); font-size: 13px; }
+.tag { font-size: 11px; padding: 1px 7px; border-radius: 99px; background: var(--surface-2); color: var(--muted); margin-left: 6px; white-space: nowrap; }
+.row a.btn { font-size: 13px; padding: 6px 12px; border: 1px solid var(--border); border-radius: 8px; text-decoration: none; white-space: nowrap; }
+.row.live a.btn { background: var(--live); border-color: var(--live); color: #fff; }
+
+/* cards */
+.cards { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
+.card h3 { font-size: 15px; margin: 0 0 10px; }
+.card .t { padding: 8px 0; border-top: 1px solid var(--border); font-size: 14px; }
+.card .t .n { font-weight: 500; }
+.card .t .c { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 2px; }
+.card .note { color: var(--muted); font-size: 12px; margin-top: 4px; }
+.card .count { color: var(--muted); font-size: 13px; margin-top: 8px; }
+
+/* calendar */
+.cal .row { grid-template-columns: 1fr auto; }
+.cal .row .when { color: var(--muted); font-size: 14px; font-variant-numeric: tabular-nums; text-align: right; }
+.cal .row.done { opacity: .55; }
+
+.empty { color: var(--muted); background: var(--surface); border: 1px dashed var(--border); border-radius: var(--radius); padding: 24px; text-align: center; }
+.search { margin-bottom: 16px; }
+footer { margin-top: 40px; color: var(--muted); font-size: 13px; }
+
+@media (max-width: 560px) {
+  .row { grid-template-columns: 52px 1fr; }
+  .row a.btn { grid-column: 2; justify-self: start; }
+  .cal .row { grid-template-columns: 1fr; }
+  .cal .row .when { text-align: left; }
+}
+</style>
+</head>
+<body>
+
+<div class="login" id="login">
+  <form id="loginForm" autocomplete="off">
+    <h1>Фізика · Магістратура</h1>
+    <p>Розклад, посилання на заняття та записи. Введіть пароль групи.</p>
+    <input type="password" id="pw" placeholder="Пароль" autofocus required aria-label="Пароль">
+    <label class="remember"><input type="checkbox" id="remember"> Запам'ятати на цьому пристрої</label>
+    <button class="primary" type="submit" id="go">Увійти</button>
+    <div class="error" id="err" role="alert"></div>
+  </form>
+</div>
+
+<div class="wrap" id="app" hidden>
+  <header>
+    <div>
+      <h1 id="hTitle"></h1>
+      <div class="sub" id="hSub"></div>
+    </div>
+    <button class="logout" id="logout">Вийти</button>
+  </header>
+  <div id="next"></div>
+  <nav class="tabs" role="tablist">
+    <button role="tab" data-tab="schedule">Розклад</button>
+    <button role="tab" data-tab="subjects">Предмети та викладачі</button>
+    <button role="tab" data-tab="recordings">Записи</button>
+    <button role="tab" data-tab="calendar">Графік навчання</button>
+    <button role="tab" data-tab="links" id="linksTab">Посилання</button>
+  </nav>
+  <section id="view"></section>
+  <footer id="foot"></footer>
+</div>
+
+<script>
+const PAYLOAD = /*PAYLOAD*/null;
+const STORE_KEY = "physics-site-pw";
+
+const b64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+async function decrypt(password) {
+  const base = await crypto.subtle.importKey("raw", new TextEncoder().encode(password), "PBKDF2", false, ["deriveKey"]);
+  const key = await crypto.subtle.deriveKey(
+    { name: "PBKDF2", salt: b64(PAYLOAD.salt), iterations: PAYLOAD.iter, hash: "SHA-256" },
+    base, { name: "AES-GCM", length: 256 }, false, ["decrypt"]);
+  const plain = await crypto.subtle.decrypt({ name: "AES-GCM", iv: b64(PAYLOAD.iv) }, key, b64(PAYLOAD.ct));
+  return JSON.parse(new TextDecoder().decode(plain));
+}
+
+function store(kind) { try { return kind === "local" ? localStorage : sessionStorage; } catch { return null; } }
+function savePw(pw, remember) { try { store(remember ? "local" : "session")?.setItem(STORE_KEY, pw); } catch {} }
+function loadPw() { try { return store("session")?.getItem(STORE_KEY) || store("local")?.getItem(STORE_KEY); } catch { return null; } }
+function clearPw() { for (const k of ["session", "local"]) try { store(k)?.removeItem(STORE_KEY); } catch {} }
+
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const safeUrl = u => /^https?:\/\//i.test(u || "") ? u : "#";
+const DOW = ["неділя", "понеділок", "вівторок", "середа", "четвер", "п'ятниця", "субота"];
+const MON = ["січня", "лютого", "березня", "квітня", "травня", "червня", "липня", "серпня", "вересня", "жовтня", "листопада", "грудня"];
+const KIND = { "л": "лекція", "пр": "практичне", "лаб": "лабораторна" };
+const parseDate = d => { const [y, m, dd] = d.split("-").map(Number); return new Date(y, m - 1, dd); };
+const at = (d, t) => { const x = parseDate(d); const [h, mi] = t.split(":").map(Number); x.setHours(h, mi); return x; };
+const fmtDay = d => { const x = parseDate(d); return `${x.getDate()} ${MON[x.getMonth()]}`; };
+const fmtShort = d => { const x = parseDate(d); return `${String(x.getDate()).padStart(2, "0")}.${String(x.getMonth() + 1).padStart(2, "0")}.${x.getFullYear()}`; };
+const addMin = (t, m) => { const [h, mi] = t.split(":").map(Number); const x = h * 60 + mi + m; return `${String(Math.floor(x / 60)).padStart(2, "0")}:${String(x % 60).padStart(2, "0")}`; };
+const todayStr = () => { const n = new Date(); return `${n.getFullYear()}-${String(n.getMonth() + 1).padStart(2, "0")}-${String(n.getDate()).padStart(2, "0")}`; };
+const tel = p => `tel:+38${String(p).replace(/\D/g, "")}`;
+
+let D, tab = "schedule";
+
+function sessionLink(s) { return s.link || D.teachers[s.teacher]?.link || ""; }
+function sessionState(s, now) {
+  const start = at(s.date, s.time), end = new Date(start.getTime() + D.slotMinutes * 60000);
+  return now >= end ? "past" : now >= start ? "live" : "future";
+}
+
+function renderNext() {
+  const now = new Date();
+  const sorted = [...D.sessions].sort((a, b) => at(a.date, a.time) - at(b.date, b.time));
+  const s = sorted.find(x => sessionState(x, now) !== "past");
+  const el = document.getElementById("next");
+  if (!s) { el.innerHTML = ""; return; }
+  const live = sessionState(s, now) === "live";
+  const subj = D.subjects[s.subject], t = D.teachers[s.teacher];
+  const link = sessionLink(s);
+  el.innerHTML = `<div class="next ${live ? "live" : ""}">
+    <div class="label">${live ? "Зараз іде" : "Наступне заняття"}</div>
+    <div class="title">${esc(subj?.name)}${s.kind ? `<span class="tag">${esc(KIND[s.kind] || s.kind)}</span>` : ""}</div>
+    <div class="meta">${DOW[parseDate(s.date).getDay()]}, ${fmtDay(s.date)} · ${s.time}–${addMin(s.time, D.slotMinutes)}${t ? " · " + esc(t.name) : ""}</div>
+    ${link ? `<a class="join" href="${esc(safeUrl(link))}" target="_blank" rel="noopener">Приєднатися</a>` : ""}
+  </div>`;
+}
+
+function renderSchedule() {
+  const now = new Date(), today = todayStr();
+  const days = {};
+  for (const s of D.sessions) (days[s.date] ||= []).push(s);
+  const keys = Object.keys(days).sort();
+  if (!keys.length) return `<div class="empty">Розклад ще не додано.</div>`;
+  return keys.map(d => {
+    const cls = d < today ? "past" : d === today ? "today" : "";
+    const rows = days[d].sort((a, b) => a.time.localeCompare(b.time)).map(s => {
+      const subj = D.subjects[s.subject], t = D.teachers[s.teacher], link = sessionLink(s);
+      const st = sessionState(s, now);
+      return `<div class="row ${st === "live" ? "live" : ""}">
+        <div class="time">${s.time}<small>до ${addMin(s.time, D.slotMinutes)}</small></div>
+        <div class="what"><div class="name">${esc(subj?.name || s.subject)}${s.kind ? `<span class="tag">${esc(KIND[s.kind] || s.kind)}</span>` : ""}</div>
+          <div class="who">${esc(t?.name || "")}</div></div>
+        ${link ? `<a class="btn" href="${esc(safeUrl(link))}" target="_blank" rel="noopener">${st === "live" ? "Приєднатися" : "Посилання"}</a>` : "<span></span>"}
+      </div>`;
+    }).join("");
+    return `<div class="day ${cls}" ${d === today ? 'id="today"' : ""}>
+      <h2>${fmtDay(d)} <span class="dow">${DOW[parseDate(d).getDay()]}</span></h2>
+      <div class="list">${rows}</div></div>`;
+  }).join("");
+}
+
+function renderSubjects() {
+  return `<div class="cards">${Object.entries(D.subjects).map(([id, s]) => {
+    const n = D.sessions.filter(x => x.subject === id).length;
+    const r = D.recordings.filter(x => x.subject === id).length;
+    const teachers = s.teachers.map(tid => {
+      const t = D.teachers[tid]; if (!t) return "";
+      return `<div class="t"><div class="n">${esc(t.name)}</div><div class="c">
+        ${t.phone ? `<a href="${tel(t.phone)}">${esc(t.phone)}</a>` : ""}
+        ${t.link ? `<a href="${esc(safeUrl(t.link))}" target="_blank" rel="noopener">Посилання на заняття</a>` : ""}
+      </div>${t.note ? `<div class="note">${esc(t.note)}</div>` : ""}</div>`;
+    }).join("");
+    return `<div class="card"><h3>${esc(s.name)}</h3>${teachers}
+      <div class="count">Занять у сесії: ${n}${r ? ` · записів: ${r}` : ""}</div></div>`;
+  }).join("")}</div>`;
+}
+
+function renderRecordings() {
+  if (!D.recordings.length) return `<div class="empty">Записів поки немає. Вони з'являться тут після занять.</div>`;
+  const list = [...D.recordings].sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+  return `<input type="search" class="search" id="recSearch" placeholder="Пошук за предметом або темою" aria-label="Пошук записів">
+    <div class="list" id="recList">${list.map(r => {
+      const subj = D.subjects[r.subject]?.name || r.subject || "";
+      return `<div class="row" data-q="${esc((subj + " " + (r.title || "")).toLowerCase())}">
+        <div class="time">${r.date ? fmtShort(r.date).slice(0, 5) : ""}${r.time ? `<small>${esc(r.time)}</small>` : ""}</div>
+        <div class="what"><div class="name">${esc(r.title || subj)}</div><div class="who">${r.title ? esc(subj) : ""}</div></div>
+        <a class="btn" href="${esc(safeUrl(r.url))}" target="_blank" rel="noopener">Дивитися</a>
+      </div>`;
+    }).join("")}</div>`;
+}
+
+function renderCalendar() {
+  const today = todayStr();
+  return `<div class="list cal">${D.calendar.map(c => {
+    const done = c.to < today;
+    const when = c.from ? `${fmtShort(c.from)} – ${fmtShort(c.to)}` : `до ${fmtShort(c.to)}`;
+    return `<div class="row ${done ? "done" : ""}"><div class="what"><div class="name">${esc(c.name)}</div></div><div class="when">${when}</div></div>`;
+  }).join("")}</div>`;
+}
+
+function renderLinks() {
+  if (!D.links.length) return `<div class="empty">Корисних посилань поки немає.</div>`;
+  return `<div class="list">${D.links.map(l => `<div class="row" style="grid-template-columns:1fr auto">
+    <div class="what"><div class="name">${esc(l.title)}</div>${l.note ? `<div class="who">${esc(l.note)}</div>` : ""}</div>
+    <a class="btn" href="${esc(safeUrl(l.url))}" target="_blank" rel="noopener">Відкрити</a></div>`).join("")}</div>`;
+}
+
+const VIEWS = { schedule: renderSchedule, subjects: renderSubjects, recordings: renderRecordings, calendar: renderCalendar, links: renderLinks };
+
+function render() {
+  renderNext();
+  document.querySelectorAll("nav.tabs button").forEach(b => b.setAttribute("aria-selected", b.dataset.tab === tab));
+  document.getElementById("view").innerHTML = VIEWS[tab]();
+  const rs = document.getElementById("recSearch");
+  if (rs) rs.addEventListener("input", () => {
+    const q = rs.value.trim().toLowerCase();
+    document.querySelectorAll("#recList .row").forEach(r => r.hidden = q && !r.dataset.q.includes(q));
+  });
+}
+
+function show(data) {
+  D = Object.assign({ teachers: {}, subjects: {}, sessions: [], recordings: [], links: [], calendar: [], slotMinutes: 80 }, data);
+  document.getElementById("login").hidden = true;
+  document.getElementById("app").hidden = false;
+  document.getElementById("hTitle").textContent = D.title;
+  document.getElementById("hSub").textContent = `Група ${D.group} · ${D.program}`;
+  document.getElementById("foot").textContent = D.university || "";
+  document.title = `${D.group} · Фізика`;
+  try { tab = sessionStorage.getItem("physics-site-tab") || tab; } catch {}
+  if (!VIEWS[tab]) tab = "schedule";
+  render();
+  document.getElementById("today")?.scrollIntoView({ block: "start" });
+  // Refresh "live" highlighting; other tabs are static and may hold user input.
+  setInterval(() => { if (document.hidden) return; tab === "schedule" ? render() : renderNext(); }, 60000);
+}
+
+document.querySelectorAll("nav.tabs button").forEach(b => b.addEventListener("click", () => {
+  tab = b.dataset.tab; try { sessionStorage.setItem("physics-site-tab", tab); } catch {} render();
+}));
+
+document.getElementById("loginForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const pw = document.getElementById("pw").value, err = document.getElementById("err"), go = document.getElementById("go");
+  err.textContent = ""; go.disabled = true; go.textContent = "Перевірка…";
+  try {
+    const data = await decrypt(pw);
+    savePw(pw, document.getElementById("remember").checked);
+    show(data);
+  } catch {
+    err.textContent = "Невірний пароль";
+  } finally { go.disabled = false; go.textContent = "Увійти"; }
+});
+
+document.getElementById("logout").addEventListener("click", () => { clearPw(); location.reload(); });
+
+(async () => {
+  if (!PAYLOAD) { document.getElementById("err").textContent = "Сайт ще не зібрано (node build.mjs)."; return; }
+  const saved = loadPw();
+  if (saved) { try { show(await decrypt(saved)); } catch { clearPw(); } }
+})();
+</script>
+</body>
+</html>
