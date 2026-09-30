@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "word-document-processor": {
+      "source": "qodex-ai/ai-agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/word-document-processor/SKILL.md",
+      "computedHash": "64fe859ec69a58c9dc3d1ac38c751ede52a602dfc03268cdad69faa5b74a1779"
+    }
+  }
+}
