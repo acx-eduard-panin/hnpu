@@ -37,6 +37,7 @@ const ymd = (y, m, d) => `${y}-${String(m + 1).padStart(2, "0")}-${String(d).pad
 const addMin = (t, m) => { const [h, mi] = t.split(":").map(Number); const x = h * 60 + mi + m; return `${String(Math.floor(x / 60)).padStart(2, "0")}:${String(x % 60).padStart(2, "0")}`; };
 const platform = u => /zoom\.us/.test(u) ? "Zoom" : /meet\.google/.test(u) ? "Google Meet" : "Посилання";
 const link = u => u ? `<a href="${esc(u)}">${platform(u)}</a>` : "";
+const code = c => c ? `<div class="note">код ${esc(c)}</div>` : "";
 const slot = D.slotMinutes || 80;
 const phones = D.showPhones !== false;
 const evType = c => ["session", "practice", "deadline"].includes(c.type) ? c.type : "session";
@@ -51,7 +52,7 @@ const schedule = Object.keys(byDay).sort().map(d => `<tbody class="day">
     const t = D.teachers[s.teacher];
     return `<tr><td class="tm">${s.time}–${addMin(s.time, slot)}</td>
       <td>${esc(D.subjects[s.subject]?.name)}${s.kind ? ` <span class="tag">${esc(KIND[s.kind] || s.kind)}</span>` : ""}</td>
-      <td>${esc(t?.name)}</td><td>${link(s.link || t?.link)}</td></tr>`;
+      <td>${esc(t?.name)}</td><td>${link(s.link || t?.link)}${code(s.link ? s.code : t?.code)}</td></tr>`;
   }).join("")}</tbody>`).join("");
 
 // --- teachers & links
@@ -59,7 +60,7 @@ const contacts = Object.values(D.subjects).flatMap(s => s.teachers.map((tid, i) 
   const t = D.teachers[tid] || {};
   return `<tr>${i === 0 ? `<td rowspan="${s.teachers.length}">${esc(s.name)}</td>` : ""}
     <td>${esc(t.name)}</td>${phones ? `<td class="nw">${esc(t.phone)}</td>` : ""}
-    <td class="url">${t.link ? `<a href="${esc(t.link)}">${esc(t.link)}</a>` : ""}${t.note ? `<div class="note">${esc(t.note)}</div>` : ""}</td></tr>`;
+    <td class="url">${t.link ? `<a href="${esc(t.link)}">${esc(t.link)}</a>` : ""}${t.code ? `<div class="note">Код доступу: ${esc(t.code)}</div>` : ""}${t.note ? `<div class="note">${esc(t.note)}</div>` : ""}</td></tr>`;
 })).join("");
 
 // --- academic calendar: month grids + list

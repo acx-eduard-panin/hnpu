@@ -27,10 +27,10 @@ Changing the password = edit `.password`, rebuild, commit, and tell the group.
 
 ## data.json format
 
-- `teachers`: `{ id: { name, phone, link, note? } }` — `link` is the teacher's default meeting URL.
+- `teachers`: `{ id: { name, phone, link, code?, note? } }` — `link` is the teacher's default meeting URL; `code` is its passcode (e.g. Zoom), shown next to the link in the schedule, subject cards and PDF.
 - `showPhones`: `false` strips all `phone` fields from the published site payload and the PDF (kept in local `data.json`); set `true` to show them again.
 - `subjects`: `{ id: { name, teachers: [teacherId] } }`
-- `sessions`: `[{ date: "YYYY-MM-DD", time: "HH:MM", subject, teacher, kind?: "л"|"пр"|"лаб", link? }]` — `link` overrides the teacher's link for that one class. Each slot lasts `slotMinutes` (80).
+- `sessions`: `[{ date: "YYYY-MM-DD", time: "HH:MM", subject, teacher, kind?: "л"|"пр"|"лаб", link?, code? }]` — `link` overrides the teacher's link for that one class (with its own optional `code`). Each slot lasts `slotMinutes` (80).
 - `recordings`: `[{ date, subject, title?, url, time? }]` — add after each class once the video is uploaded.
 - `links`: `[{ title, url, note? }]` — group chat, drives, course pages.
 - `calendar`: `[{ name, type, from?, to }]` — `type`: `session` (blue), `practice` (amber), `deadline` (red outline, marks only `to`). Rendered as month grids — sessions, practice, deadlines from the official «Графік освітнього процесу».

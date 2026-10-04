@@ -103,6 +103,7 @@ nav.tabs button[aria-selected=true] { color: var(--text); border-bottom-color: v
 .row .what { min-width: 0; }
 .row .what .name { font-weight: 500; }
 .row .what .who { color: var(--muted); font-size: 13px; }
+.code b { font-family: ui-monospace, Consolas, monospace; color: var(--text); user-select: all; }
 .tag { font-size: 11px; padding: 1px 7px; border-radius: 99px; background: var(--surface-2); color: var(--muted); margin-left: 6px; white-space: nowrap; }
 .row a.btn { font-size: 13px; padding: 6px 12px; border: 1px solid var(--border); border-radius: 8px; text-decoration: none; white-space: nowrap; }
 .row.live a.btn { background: var(--live); border-color: var(--live); color: #fff; }
@@ -304,6 +305,9 @@ function goToDay(ds) {
 }
 
 function sessionLink(s) { return s.link || D.teachers[s.teacher]?.link || ""; }
+// Passcode belongs to the link it came with: a per-class link uses its own code, not the teacher's.
+function sessionCode(s) { return s.link ? s.code || "" : D.teachers[s.teacher]?.code || ""; }
+const codeHTML = c => c ? `<span class="code">Код доступу: <b>${esc(c)}</b></span>` : "";
 function sessionState(s, now) {
   const start = at(s.date, s.time), end = new Date(start.getTime() + D.slotMinutes * 60000);
   return now >= end ? "past" : now >= start ? "live" : "future";
@@ -322,6 +326,7 @@ function renderNext() {
     <div class="label">${live ? "Зараз іде" : "Наступне заняття"}</div>
     <div class="title">${esc(subj?.name)}${s.kind ? `<span class="tag">${esc(KIND[s.kind] || s.kind)}</span>` : ""}</div>
     <div class="meta">${DOW[parseDate(s.date).getDay()]}, ${fmtDay(s.date)} · ${s.time}–${addMin(s.time, D.slotMinutes)}${t ? " · " + esc(t.name) : ""}</div>
+    ${sessionCode(s) ? `<div class="meta">${codeHTML(sessionCode(s))}</div>` : ""}
     ${link ? `<a class="join" href="${esc(safeUrl(link))}" target="_blank" rel="noopener">Приєднатися</a>` : ""}
   </div>`;
 }
@@ -348,7 +353,7 @@ function renderSchedule() {
       return `<div class="row ${st === "live" ? "live" : ""}">
         <div class="time">${s.time}<small>до ${addMin(s.time, D.slotMinutes)}</small></div>
         <div class="what"><div class="name">${esc(subj?.name || s.subject)}${s.kind ? `<span class="tag">${esc(KIND[s.kind] || s.kind)}</span>` : ""}</div>
-          <div class="who">${esc(t?.name || "")}</div></div>
+          <div class="who">${esc(t?.name || "")}</div>${sessionCode(s) ? `<div class="who">${codeHTML(sessionCode(s))}</div>` : ""}</div>
         ${link ? `<a class="btn" href="${esc(safeUrl(link))}" target="_blank" rel="noopener">${st === "live" ? "Приєднатися" : "Посилання"}</a>` : "<span></span>"}
       </div>`;
     }).join("");
@@ -367,6 +372,7 @@ function renderSubjects() {
       return `<div class="t"><div class="n">${esc(t.name)}</div><div class="c">
         ${t.phone ? `<a href="${tel(t.phone)}">${esc(t.phone)}</a>` : ""}
         ${t.link ? `<a href="${esc(safeUrl(t.link))}" target="_blank" rel="noopener">Посилання на заняття</a>` : ""}
+        ${codeHTML(t.code)}
       </div>${t.note ? `<div class="note">${esc(t.note)}</div>` : ""}</div>`;
     }).join("");
     return `<div class="card"><h3>${esc(s.name)}</h3>${teachers}
