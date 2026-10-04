@@ -2,19 +2,15 @@
 //
 //   node pdf.mjs
 //
-// Outputs:
-//   docs/rozklad.pdf  encrypted (AES-256) with the site password; published and linked from the site
-//   out/rozklad.pdf   unencrypted copy for sending privately (gitignored, never publish it)
+// Output: out/rozklad.pdf, no password, for sending privately to the group chat
+// (gitignored, never commit or publish it).
 //
-// Needs Google Chrome or Microsoft Edge (set CHROME to override the path) and Python with pypdf + cryptography.
+// Needs Google Chrome or Microsoft Edge (set CHROME to override the path).
 import { readFileSync, writeFileSync, existsSync, mkdirSync, rmSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 
-const password = process.env.SITE_PASSWORD
-  || (existsSync(".password") && readFileSync(".password", "utf8").split(/\r?\n/)[0].trim());
-if (!password) { console.error("No password: set SITE_PASSWORD or create a .password file."); process.exit(1); }
 
 const chrome = [process.env.CHROME,
   "C:/Program Files/Google/Chrome/Application/chrome.exe",
@@ -173,14 +169,4 @@ execFileSync(chrome, ["--headless=new", "--disable-gpu", "--no-pdf-header-footer
 rmSync(resolve("out/.chrome"), { recursive: true, force: true });
 if (!existsSync(plain)) { console.error("Chrome did not produce a PDF."); process.exit(1); }
 
-// Encrypt with the site password so the published copy is as protected as the site.
-execFileSync("python", ["-c", `
-import sys
-from pypdf import PdfReader, PdfWriter
-w = PdfWriter(clone_from=PdfReader(sys.argv[1]))
-w.add_metadata({"/Title": sys.argv[4], "/Author": "Група " + sys.argv[5]})
-w.encrypt(user_password=sys.argv[3], algorithm="AES-256")
-with open(sys.argv[2], "wb") as f: w.write(f)
-`, plain, resolve("docs/rozklad.pdf"), password, `Розклад ${D.group}`, D.group], { stdio: "inherit", env: { ...process.env, PYTHONIOENCODING: "utf8" } });
-
-console.log("Built docs/rozklad.pdf (encrypted, publish) and out/rozklad.pdf (unencrypted, private)");
+console.log("Built out/rozklad.pdf (no password, private: never commit or publish it)");

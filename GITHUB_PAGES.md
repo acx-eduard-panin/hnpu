@@ -7,7 +7,7 @@
 ## Як це влаштовано
 
 ```
-data.json + .password  ──node build.mjs / node pdf.mjs──►  physics-site/docs/ (index.html, rozklad.pdf — зашифровані)  ──git push──►  GitHub Actions  ──►  GitHub Pages
+data.json + .password  ──node build.mjs / node pdf.mjs──►  physics-site/docs/ (index.html, зашифрований)  ──git push──►  GitHub Actions  ──►  GitHub Pages
 (тільки на вашому ПК)                       (зашифрований, у git)                        (pages.yml)          (публічна адреса)
 ```
 
@@ -108,23 +108,18 @@ Workflow сам запускається лише тоді, коли зміню�
 ### Змінити пароль
 
 1. Запишіть новий пароль у перший рядок `physics-site/.password`.
-2. `node build.mjs` → `node pdf.mjs` → commit → push (PDF теж отримає новий пароль).
+2. `node build.mjs` → `node pdf.mjs` → commit → push.
 3. Повідомте групу. Старий пароль перестане працювати одразу після публікації; у кого він був збережений, побачать вікно входу.
 
 ### PDF для тих, хто не хоче користуватися сайтом
 
 `node pdf.mjs` створює документ на 3 сторінки A4: розклад, контакти й посилання викладачів, календар навчального року й записи. Посилання «Zoom» і «Google Meet» у PDF клікабельні.
 
-| Файл | Що це | Як поширювати |
-|---|---|---|
-| `physics-site/docs/rozklad.pdf` | **Зашифрований** тим самим паролем, що й сайт | Публікується разом із сайтом (кнопка **PDF** угорі сайту), можна пересилати будь-куди |
-| `physics-site/out/rozklad.pdf` | **Без пароля**, лише на вашому ПК | Тільки в закритий чат групи або особисто; ніколи не комітьте й не викладайте у відкритий доступ |
-
-Пряме посилання на зашифрований PDF: https://acx-eduard-panin.github.io/hnpu/rozklad.pdf (відкривається в будь-якому переглядачі PDF, що запитає пароль).
+Результат: `physics-site/out/rozklad.pdf`, **без пароля**, лише на вашому ПК. Надсилайте його тільки в закритий чат групи або особисто. PDF не комітиться й не публікується на сайті (`out/` і `docs/*.pdf` у `.gitignore`).
 
 PDF — це знімок на момент збірки (дата є у верхньому правому куті). Після змін у розкладі чи нових записах запускайте `node pdf.mjs` і за потреби надсилайте групі оновлену версію.
 
-Для `node pdf.mjs` потрібні Google Chrome або Microsoft Edge і Python з `pypdf` та `cryptography` (`pip install pypdf cryptography`).
+Для `node pdf.mjs` потрібен Google Chrome або Microsoft Edge.
 
 ### Якщо загубився `data.json`
 

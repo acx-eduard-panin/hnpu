@@ -9,10 +9,10 @@ Password-protected static site for the master's group **А4.08-Мз26-11** (Фі
 - `build.mjs` — validates `data.json`, encrypts it (PBKDF2-SHA256 310k iterations → AES-256-GCM) and injects the payload into the template → `docs/index.html`. Decryption happens in the browser via Web Crypto.
 - `.password` — site password, first line (gitignored). `SITE_PASSWORD` env var overrides it.
 
-- `pdf.mjs` — renders the same data as a 3-page A4 PDF via headless Chrome/Edge, then encrypts it with the site password (pypdf, AES-256) → `docs/rozklad.pdf` (published, linked by the «PDF» button). Also leaves an unencrypted `out/rozklad.pdf` (gitignored) for sending privately.
+- `pdf.mjs` — renders the same data as a 3-page A4 PDF via headless Chrome/Edge → `out/rozklad.pdf`, no password, gitignored. It is sent privately to the group chat and is **not** published: never copy it into `docs/`.
 
 ```sh
-node build.mjs && node pdf.mjs   # rebuild site + PDF after any change (keep them in sync)
+node build.mjs && node pdf.mjs   # rebuild site + local PDF after any change (keep them in sync)
 node build.mjs --decrypt   # recover data.json from docs/index.html
 ```
 
@@ -20,7 +20,7 @@ Changing the password = edit `.password`, rebuild, commit, and tell the group.
 
 ## Security rules (treat the repo as public)
 
-- Never commit `out/` — it holds the **unencrypted** PDF and the print HTML.
+- Never commit `out/` — it holds the PDF (no password) and the print HTML. No PDF goes into `docs/` (`docs/*.pdf` is gitignored).
 - Never commit `data.json`, `.password`, or anything under `../artifacts/` (source docs contain phone numbers).
 - Never put content in plaintext in the template, README, or commit messages — only inside the encrypted payload.
 - Rebuilding changes the salt/IV, so `docs/index.html` diffs on every build; that's expected.
